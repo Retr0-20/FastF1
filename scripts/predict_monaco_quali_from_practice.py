@@ -160,20 +160,47 @@ def build_fastest_valid_soft_laps(session, session_type, useful_columns):
 # ---------------------------------------------------------------------
 
 def predict_quali_from_practice(practice_features):
-    copy practice_features
+    prediction = practice_features.copy(deep=True)
 
-    calculate prediction_score using:
-        15% FP1
-        25% FP2
-        60% FP3
+    prediction["prediction_score"] = 0
+    prediction["weight_total"] = 0
 
-    sort by prediction_score
+    if "best_FP1_lap_seconds" in prediction.columns:
+        prediction["prediction_score"] += prediction["best_FP1_lap_seconds"] * 0.15
+        prediction["weight_total"] += 0.15
+    
+    if "best_FP2_lap_seconds" in prediction.columns:
+        prediction["prediction_score"] += prediction["best_FP2_lap_seconds"] * 0.25
+        prediction["weight_total"] += 0.25
 
-    add predicted_quali_position
+    if "best_FP3_lap_seconds" in prediction.columns:
+        prediction["prediction_score"] += prediction["best_FP3_lap_seconds"] * 0.60
+        prediction["weight_total"] += 0.60
 
-    save to CSV
+    # normalise prediction
+    prediction["prediction_score"] = prediction["prediction_score"] / prediction["weight_total"]
 
-    return prediction table
+    # sort by prediction_score
+    prediction = prediction.sort_values("prediction_score").reset_index(drop=True)
+
+    # add predicted_quali_position
+    prediction["predicted_quali_position"] = range(1, len(prediction) + 1)
+
+    # sort values by predicted_quali_position
+    prediction = prediction.sort_values("predicted_quali_position")
+
+    # save to CSV
+    prediction = prediction [[
+        "predicted_quali_position",
+        "Driver",
+        "Team",
+        "prediction_score",
+        "best_FP1_lap",
+        "best_FP2_lap",
+        "best_FP3_lap",
+    ]]
+
+    return prediction
 
 # ---------------------------------------------------------------------
 # Driver feature extraction
@@ -282,3 +309,17 @@ practice_features.to_csv(output_path, index=False)
 
 print("\nSaved practice driver features:")
 print(output_path)
+
+
+quali_prediction = predict_quali_from_practice(practice_features)
+
+print("\nPredicted Qualifying Order from Practice Sessions:")
+print(quali_prediction.to_string(index=False))
+
+prediction_path = Path(f"data/predictions/{YEAR}_{EVENT}_quali_prediction_from_practice.csv")
+prediction_path.parent.mkdir(parents=True, exist_ok=True)
+
+quali_prediction.to_csv(prediction_path, index=False)
+
+print("\nSaved qualifying prediction:")
+print(prediction_path)
