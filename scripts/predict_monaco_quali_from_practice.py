@@ -5,9 +5,6 @@ CACHE_DIR = Path("fastf1_cache")
 CACHE_DIR.mkdir(exist_ok=True)
 fastf1.Cache.enable_cache(str(CACHE_DIR))
 
-OUTPUT_PATH = Path("data/processed/practice_session_fastest_laps.csv")
-OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
-
 # ---------------------------------------------------------------------
 
 YEAR = 2025
@@ -51,44 +48,114 @@ def format_sector_time(value):
     return f"{value.total_seconds():.3f}"
 
 
+def time_to_seconds(value):
+    if str(value) == "NaT":
+        return None
+
+    return round(value.total_seconds(), 3)
+
+
+def seconds_to_lap_time(seconds):
+    if seconds is None:
+        return "N/A"
+
+    minutes = int(seconds // 60)
+    remaining_seconds = seconds % 60
+
+    return f"{minutes}:{remaining_seconds:06.3f}"
+
+
+def seconds_to_sector_time(seconds):
+    if seconds is None:
+        return "N/A"
+
+    return f"{seconds:.3f}"
+
 
 # ---------------------------------------------------------------------
 
-def get_fastest_valid_soft_laps(session, useful_columns, limit=20):
+def get_fastest_valid_soft_laps(session, session_type, useful_columns, limit=20):
 
     # take session.laps
     # select useful columns
     # copy the data
     if session is None:
-         return "Session was empty..."
+         return None
     
-    fp_display = session.laps[useful_columns].copy()
-    fp_display = fp_display.dropna(subset=["LapTime"])
-    fp_display = fp_display[
-         (fp_display["IsAccurate"] == True) &
-         (fp_display["Deleted"] == False) &
-         (fp_display["Compound"] == "SOFT") &
-         (fp_display["TyreLife"] <= 10)
+    fp_laps = session.laps[useful_columns].copy()
+
+    # filter
+    fp_laps = fp_laps.dropna(subset=["LapTime"])
+    fp_laps = fp_laps[
+         (fp_laps["IsAccurate"] == True) &
+         (fp_laps["Deleted"] == False) &
+         (fp_laps["Compound"] == "SOFT") &
+         (fp_laps["TyreLife"] <= 10)
     ]
 
     # sort before formatting
-    fp_display = fp_display.sort_values("LapTime").head(limit)
+    fp_laps = fp_laps.sort_values("LapTime").head(limit)
 
-    # format LapTime
-    # format sector times
-    # convert TyreLife to whole number
-    fp_display["LapTime"] = fp_display["LapTime"].apply(format_lap_time)
-    fp_display["Sector1Time"] = fp_display["Sector1Time"].apply(format_sector_time)
-    fp_display["Sector2Time"] = fp_display["Sector2Time"].apply(format_sector_time)
-    fp_display["Sector3Time"] = fp_display["Sector3Time"].apply(format_sector_time)
-    fp_display["TyreLife"] = fp_display["TyreLife"].astype("Int64")
+    # create numeric seconds columns first
+    fp_laps["LapTimeSeconds"] = fp_laps["LapTime"].apply(time_to_seconds)
+    fp_laps["Sector1Seconds"] = fp_laps["Sector1Time"].apply(time_to_seconds)
+    fp_laps["Sector2Seconds"] = fp_laps["Sector2Time"].apply(time_to_seconds)
+    fp_laps["Sector3Seconds"] = fp_laps["Sector3Time"].apply(time_to_seconds)
+
+    # then create readable formatted columns
+    fp_laps["LapTimeFormatted"] = fp_laps["LapTimeSeconds"].apply(seconds_to_lap_time)
+    fp_laps["Sector1Formatted"] = fp_laps["Sector1Seconds"].apply(seconds_to_sector_time)
+    fp_laps["Sector2Formatted"] = fp_laps["Sector2Seconds"].apply(seconds_to_sector_time)
+    fp_laps["Sector3Formatted"] = fp_laps["Sector3Seconds"].apply(seconds_to_sector_time)
+
+    # save numeric CSV
+    csv_output = fp_laps[[
+        "Driver",
+        "Team",
+        "LapTimeSeconds",
+        "Sector1Seconds",
+        "Sector2Seconds",
+        "Sector3Seconds",
+        "Compound",
+        "TyreLife",
+        "IsAccurate",
+        "Deleted",
+        "TrackStatus"
+    ]].copy()
+    
+    csv_output["TyreLife"] = csv_output["TyreLife"].astype("Int64")
 
     # return the display table
-    fp_display.to_csv(OUTPUT_PATH, index=False)
+    output_path = Path(f"data/processed/{YEAR}_{EVENT}_{session_type}_fastest_soft_laps.csv")
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    csv_output.to_csv(output_path, index=False)
 
-    print("Saved driver features:")
-    print(OUTPUT_PATH)
-    return fp_display
+    print("Saved fastest soft laps:")
+    print(output_path)
+
+
+    # create readable version for terminal only
+    display_output = fp_laps[[
+        "Driver",
+        "Team",
+        "LapTime",
+        "Sector1Time",
+        "Sector2Time",
+        "Sector3Time",
+        "Compound",
+        "TyreLife",
+        "IsAccurate",
+        "Deleted",
+        "TrackStatus"
+    ]].copy()
+
+    display_output["LapTime"] = display_output["LapTime"].apply(format_lap_time)
+    display_output["Sector1Time"] = display_output["Sector1Time"].apply(format_sector_time)
+    display_output["Sector2Time"] = display_output["Sector2Time"].apply(format_sector_time)
+    display_output["Sector3Time"] = display_output["Sector3Time"].apply(format_sector_time)
+    display_output["TyreLife"] = display_output["TyreLife"].astype("Int64")
+
+    return display_output
 
 # ---------------------------------------------------------------------
 
@@ -108,15 +175,19 @@ useful_columns = [
 
 # ---------------------------------------------------------------------
 
-fp1_display = get_fastest_valid_soft_laps(fp1, useful_columns)
-fp2_display = get_fastest_valid_soft_laps(fp2, useful_columns)
-fp3_display = get_fastest_valid_soft_laps(fp3, useful_columns)
+fp1_display = get_fastest_valid_soft_laps(fp1, "FP1", useful_columns)
+fp2_display = get_fastest_valid_soft_laps(fp2, "FP2", useful_columns)
+fp3_display = get_fastest_valid_soft_laps(fp3, "FP3", useful_columns)
 
-print("\nFP1 fastest valid soft laps:")
-print(fp1_display.to_string(index=False))
+    
+if fp1_display is not None:
+    print("\nFP1 fastest valid soft laps:")
+    print(fp1_display.to_string(index=False))
 
-print("\nFP2 fastest valid soft laps:")
-print(fp2_display.to_string(index=False))
+if fp2_display is not None:
+    print("\nFP2 fastest valid soft laps:")
+    print(fp2_display.to_string(index=False))
 
-print("\nFP3 fastest valid soft laps:")
-print(fp3_display.to_string(index=False))
+if fp3_display is not None:
+    print("\nFP3 fastest valid soft laps:")
+    print(fp3_display.to_string(index=False))

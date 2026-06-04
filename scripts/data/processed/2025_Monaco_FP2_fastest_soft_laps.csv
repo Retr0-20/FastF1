@@ -1,0 +1,21 @@
+Driver,Team,LapTimeSeconds,Sector1Seconds,Sector2Seconds,Sector3Seconds,Compound,TyreLife,IsAccurate,Deleted,TrackStatus
+LEC,Ferrari,71.355,18.573,33.852,18.93,SOFT,4,True,False,1
+LEC,Ferrari,71.366,18.495,33.973,18.898,SOFT,7,True,False,1
+LEC,Ferrari,71.414,18.598,33.919,18.897,SOFT,2,True,False,1
+HAM,Ferrari,71.46,18.712,33.921,18.827,SOFT,7,True,False,1
+NOR,McLaren,71.677,18.869,33.838,18.97,SOFT,6,True,False,1
+LAW,Racing Bulls,71.823,18.754,33.953,19.116,SOFT,7,True,False,1
+NOR,McLaren,71.837,18.71,34.05,19.077,SOFT,4,True,False,1
+HAM,Ferrari,71.841,18.719,34.063,19.059,SOFT,4,True,False,1
+ALO,Aston Martin,71.89,18.846,34.035,19.009,SOFT,4,True,False,1
+ALB,Williams,71.918,18.823,34.121,18.974,SOFT,4,True,False,1
+NOR,McLaren,71.945,18.774,33.845,19.326,SOFT,8,True,False,1
+VER,Red Bull Racing,72.068,18.807,34.227,19.034,SOFT,9,True,False,1
+TSU,Red Bull Racing,72.072,18.865,34.102,19.105,SOFT,10,True,False,1
+ALO,Aston Martin,72.087,18.903,34.139,19.045,SOFT,2,True,False,1
+RUS,Mercedes,72.092,18.753,34.273,19.066,SOFT,10,True,False,1
+VER,Red Bull Racing,72.151,18.845,34.257,19.049,SOFT,7,True,False,1
+PIA,McLaren,72.211,18.838,34.067,19.306,SOFT,6,True,False,1
+PIA,McLaren,72.218,18.903,34.122,19.193,SOFT,2,True,False,1
+BOR,Kick Sauber,72.234,18.807,34.318,19.109,SOFT,7,True,False,1
+PIA,McLaren,72.247,18.869,34.373,19.005,SOFT,9,True,False,1

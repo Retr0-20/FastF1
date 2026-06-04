@@ -1,0 +1,21 @@
+Driver,Team,LapTimeSeconds,Sector1Seconds,Sector2Seconds,Sector3Seconds,Compound,TyreLife,IsAccurate,Deleted,TrackStatus
+VER,Red Bull Racing,72.127,18.829,34.224,19.074,SOFT,8,True,False,1
+VER,Red Bull Racing,72.25,18.971,34.17,19.109,SOFT,5,True,False,1
+RUS,Mercedes,72.482,19.131,34.317,19.034,SOFT,10,True,False,1
+SAI,Williams,72.546,18.996,34.351,19.199,SOFT,10,True,False,1
+ALB,Williams,72.571,18.814,34.42,19.337,SOFT,6,True,False,1
+VER,Red Bull Racing,72.605,19.014,34.437,19.154,SOFT,3,True,False,1
+SAI,Williams,72.688,19.151,34.398,19.139,SOFT,6,True,False,1
+HAM,Ferrari,72.69,18.945,34.492,19.253,SOFT,2,True,False,1
+RUS,Mercedes,72.711,19.244,34.346,19.121,SOFT,7,True,False,1
+LEC,Ferrari,72.713,18.879,34.691,19.143,SOFT,9,True,False,1
+ALO,Aston Martin,72.727,19.11,34.29,19.327,SOFT,4,True,False,21
+ALB,Williams,72.819,19.093,34.456,19.27,SOFT,4,True,False,1
+LEC,Ferrari,72.88,19.149,34.565,19.166,SOFT,7,True,False,1
+HUL,Kick Sauber,72.979,19.301,34.456,19.222,SOFT,7,True,False,1
+ALO,Aston Martin,73.015,19.364,34.429,19.222,SOFT,2,True,False,1
+NOR,McLaren,73.036,19.197,34.446,19.393,SOFT,10,True,False,1
+GAS,Alpine,73.041,19.323,34.415,19.303,SOFT,5,True,False,1
+RUS,Mercedes,73.053,19.198,34.42,19.435,SOFT,5,True,False,12
+SAI,Williams,73.068,19.143,34.716,19.209,SOFT,3,True,False,1
+RUS,Mercedes,73.096,19.378,34.452,19.266,SOFT,2,True,False,1
