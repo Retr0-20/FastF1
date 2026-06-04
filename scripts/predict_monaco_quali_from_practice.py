@@ -1,14 +1,24 @@
 from pathlib import Path
+
 import fastf1
+import pandas as pd
 
 CACHE_DIR = Path("fastf1_cache")
 CACHE_DIR.mkdir(exist_ok=True)
 fastf1.Cache.enable_cache(str(CACHE_DIR))
 
 # ---------------------------------------------------------------------
+# Configuration
+# ---------------------------------------------------------------------
 
+PRACTICE_SESSIONS = ["FP1", "FP2", "FP3"]
 YEAR = 2025
 EVENT = "Monaco"
+
+
+# ---------------------------------------------------------------------
+# Session loading
+# ---------------------------------------------------------------------
 
 def load_practice_session(year, event, session_type):
     try:
@@ -16,37 +26,26 @@ def load_practice_session(year, event, session_type):
         session.load()
         return session
     except Exception as e:
-            print(f"\nFailed to load {year} {event} {session_type}")
-            print(f"Reason: {e}")
-    return None
+        print(f"\nFailed to load {year} {event} {session_type}")
+        print(f"Reason: {e}")
+        return None
 
-fp1 = load_practice_session(YEAR, EVENT, "FP1")
-fp2 = load_practice_session(YEAR, EVENT, "FP2")
-fp3 = load_practice_session(YEAR, EVENT, "FP3")
-
-print("FP1 Loaded...")
-print("FP2 Loaded...")
-print("FP3 Loaded...")
 
 # ---------------------------------------------------------------------
+# Paths
+# ---------------------------------------------------------------------
 
-def format_lap_time(value):
-    if str(value) == "NaT":
-        return "N/A"
+def practice_laps_path(year, event, session_type):
+    return Path(f"data/processed/{year}_{event}_{session_type}_fastest_soft_laps.csv")
 
-    total_seconds = value.total_seconds()
 
-    minutes = int(total_seconds // 60)
-    seconds = total_seconds % 60
+def practice_driver_features_path(year, event):
+    return Path(f"data/processed/{year}_{event}_practice_driver_features.csv")
 
-    return f"{minutes}:{seconds:06.3f}"
 
-def format_sector_time(value):
-    if str(value) == "NaT":
-        return "N/A"
-
-    return f"{value.total_seconds():.3f}"
-
+# ---------------------------------------------------------------------
+# Time helpers
+# ---------------------------------------------------------------------
 
 def time_to_seconds(value):
     if str(value) == "NaT":
@@ -73,42 +72,40 @@ def seconds_to_sector_time(seconds):
 
 
 # ---------------------------------------------------------------------
+# Practice lap extraction
+# ---------------------------------------------------------------------
 
-def get_fastest_valid_soft_laps(session, session_type, useful_columns, limit=20):
-
-    # take session.laps
-    # select useful columns
-    # copy the data
+def build_fastest_valid_soft_laps(session, session_type, useful_columns):
     if session is None:
-         return None
-    
+        return None
+
     fp_laps = session.laps[useful_columns].copy()
 
-    # filter
+    # Filter to useful qualifying-style laps
     fp_laps = fp_laps.dropna(subset=["LapTime"])
     fp_laps = fp_laps[
-         (fp_laps["IsAccurate"] == True) &
-         (fp_laps["Deleted"] == False) &
-         (fp_laps["Compound"] == "SOFT") &
-         (fp_laps["TyreLife"] <= 10)
+        (fp_laps["IsAccurate"] == True) &
+        (fp_laps["Deleted"] == False) &
+        (fp_laps["Compound"] == "SOFT") &
+        (fp_laps["TyreLife"] <= 10)
     ]
 
-    # sort before formatting
-    fp_laps = fp_laps.sort_values("LapTime").head(limit)
+    # Sort before formatting/converting
+    fp_laps = fp_laps.sort_values("LapTime")
 
-    # create numeric seconds columns first
+    # Numeric columns for modelling
     fp_laps["LapTimeSeconds"] = fp_laps["LapTime"].apply(time_to_seconds)
     fp_laps["Sector1Seconds"] = fp_laps["Sector1Time"].apply(time_to_seconds)
     fp_laps["Sector2Seconds"] = fp_laps["Sector2Time"].apply(time_to_seconds)
     fp_laps["Sector3Seconds"] = fp_laps["Sector3Time"].apply(time_to_seconds)
 
-    # then create readable formatted columns
+    # Readable columns for display
     fp_laps["LapTimeFormatted"] = fp_laps["LapTimeSeconds"].apply(seconds_to_lap_time)
     fp_laps["Sector1Formatted"] = fp_laps["Sector1Seconds"].apply(seconds_to_sector_time)
     fp_laps["Sector2Formatted"] = fp_laps["Sector2Seconds"].apply(seconds_to_sector_time)
     fp_laps["Sector3Formatted"] = fp_laps["Sector3Seconds"].apply(seconds_to_sector_time)
 
-    # save numeric CSV
+    # Save model-ready CSV
     csv_output = fp_laps[[
         "Driver",
         "Team",
@@ -122,26 +119,24 @@ def get_fastest_valid_soft_laps(session, session_type, useful_columns, limit=20)
         "Deleted",
         "TrackStatus"
     ]].copy()
-    
+
     csv_output["TyreLife"] = csv_output["TyreLife"].astype("Int64")
 
-    # return the display table
-    output_path = Path(f"data/processed/{YEAR}_{EVENT}_{session_type}_fastest_soft_laps.csv")
+    output_path = practice_laps_path(YEAR, EVENT, session_type)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     csv_output.to_csv(output_path, index=False)
 
     print("Saved fastest soft laps:")
     print(output_path)
 
-
-    # create readable version for terminal only
+    # Return readable terminal version
     display_output = fp_laps[[
         "Driver",
         "Team",
-        "LapTime",
-        "Sector1Time",
-        "Sector2Time",
-        "Sector3Time",
+        "LapTimeFormatted",
+        "Sector1Formatted",
+        "Sector2Formatted",
+        "Sector3Formatted",
         "Compound",
         "TyreLife",
         "IsAccurate",
@@ -149,37 +144,97 @@ def get_fastest_valid_soft_laps(session, session_type, useful_columns, limit=20)
         "TrackStatus"
     ]].copy()
 
-    display_output["LapTime"] = display_output["LapTime"].apply(format_lap_time)
-    display_output["Sector1Time"] = display_output["Sector1Time"].apply(format_sector_time)
-    display_output["Sector2Time"] = display_output["Sector2Time"].apply(format_sector_time)
-    display_output["Sector3Time"] = display_output["Sector3Time"].apply(format_sector_time)
+    display_output = display_output.rename(columns={
+        "LapTimeFormatted": "LapTime",
+        "Sector1Formatted": "Sector1Time",
+        "Sector2Formatted": "Sector2Time",
+        "Sector3Formatted": "Sector3Time"
+    })
+
     display_output["TyreLife"] = display_output["TyreLife"].astype("Int64")
 
     return display_output
 
 # ---------------------------------------------------------------------
-
-useful_columns = [
-     "Driver",
-     "Team",
-     "LapTime",
-     "Sector1Time",
-     "Sector2Time",
-     "Sector3Time",
-     "Compound",
-     "TyreLife",
-     "IsAccurate",
-     "Deleted",
-     "TrackStatus"
-]
-
+# Driver feature extraction
 # ---------------------------------------------------------------------
 
-fp1_display = get_fastest_valid_soft_laps(fp1, "FP1", useful_columns)
-fp2_display = get_fastest_valid_soft_laps(fp2, "FP2", useful_columns)
-fp3_display = get_fastest_valid_soft_laps(fp3, "FP3", useful_columns)
+def predict_quali_from_practice(practice_features):
+    copy practice_features
 
-    
+    calculate prediction_score using:
+        15% FP1
+        25% FP2
+        60% FP3
+
+    sort by prediction_score
+
+    add predicted_quali_position
+
+    save to CSV
+
+    return prediction table
+
+# ---------------------------------------------------------------------
+# Driver feature extraction
+# ---------------------------------------------------------------------
+
+def get_best_lap_per_driver(csv_path, session_type):
+    laps = pd.read_csv(csv_path)
+
+    laps = laps.sort_values("LapTimeSeconds")
+    best_laps = laps.groupby(["Driver", "Team"]).first().reset_index()
+
+    best_laps = best_laps[[
+        "Driver",
+        "Team",
+        "LapTimeSeconds"
+    ]]
+
+    best_laps = best_laps.rename(columns={
+        "LapTimeSeconds": f"best_{session_type}_lap_seconds"
+    })
+
+    best_laps[f"best_{session_type}_lap"] = best_laps[
+        f"best_{session_type}_lap_seconds"
+    ].apply(seconds_to_lap_time)
+
+    best_laps = best_laps[[
+        "Driver",
+        "Team",
+        f"best_{session_type}_lap",
+        f"best_{session_type}_lap_seconds"
+    ]]
+
+    return best_laps
+
+
+# ---------------------------------------------------------------------
+# Run pipeline
+# ---------------------------------------------------------------------
+
+useful_columns = [
+    "Driver",
+    "Team",
+    "LapTime",
+    "Sector1Time",
+    "Sector2Time",
+    "Sector3Time",
+    "Compound",
+    "TyreLife",
+    "IsAccurate",
+    "Deleted",
+    "TrackStatus"
+]
+
+fp1 = load_practice_session(YEAR, EVENT, "FP1")
+fp2 = load_practice_session(YEAR, EVENT, "FP2")
+fp3 = load_practice_session(YEAR, EVENT, "FP3")
+
+fp1_display = build_fastest_valid_soft_laps(fp1, "FP1", useful_columns)
+fp2_display = build_fastest_valid_soft_laps(fp2, "FP2", useful_columns)
+fp3_display = build_fastest_valid_soft_laps(fp3, "FP3", useful_columns)
+
 if fp1_display is not None:
     print("\nFP1 fastest valid soft laps:")
     print(fp1_display.to_string(index=False))
@@ -191,3 +246,39 @@ if fp2_display is not None:
 if fp3_display is not None:
     print("\nFP3 fastest valid soft laps:")
     print(fp3_display.to_string(index=False))
+
+fp1_best = get_best_lap_per_driver(
+    practice_laps_path(YEAR, EVENT, "FP1"),
+    "FP1"
+)
+
+fp2_best = get_best_lap_per_driver(
+    practice_laps_path(YEAR, EVENT, "FP2"),
+    "FP2"
+)
+
+fp3_best = get_best_lap_per_driver(
+    practice_laps_path(YEAR, EVENT, "FP3"),
+    "FP3"
+)
+
+practice_features = fp1_best.merge(
+    fp2_best,
+    on=["Driver", "Team"],
+    how="outer"
+)
+
+practice_features = practice_features.merge(
+    fp3_best,
+    on=["Driver", "Team"],
+    how="outer"
+)
+
+print("\nBest practice laps per driver:")
+print(practice_features.to_string(index=False))
+
+output_path = practice_driver_features_path(YEAR, EVENT)
+practice_features.to_csv(output_path, index=False)
+
+print("\nSaved practice driver features:")
+print(output_path)
