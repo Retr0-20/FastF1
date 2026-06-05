@@ -1,0 +1,13 @@
+Driver,Team,LapTimeSeconds,Sector1Seconds,Sector2Seconds,Sector3Seconds,Compound,TyreLife,IsAccurate,Deleted,TrackStatus
+PER,Cadillac,76.17,20.199,35.718,20.253,SOFT,6,True,False,1
+PER,Cadillac,76.621,20.369,35.797,20.455,SOFT,4,True,False,1
+BOT,Cadillac,77.46,20.666,36.346,20.448,SOFT,6,True,False,1
+BOT,Cadillac,77.573,20.626,36.373,20.574,SOFT,3,True,False,1
+BOT,Cadillac,82.15,21.05,36.958,24.142,SOFT,2,True,False,1
+BOT,Cadillac,99.083,24.698,47.737,26.648,SOFT,5,True,False,1
+PER,Cadillac,99.102,23.827,46.016,29.259,SOFT,3,True,False,1
+PER,Cadillac,99.828,25.035,43.12,31.673,SOFT,5,True,False,12
+BOT,Cadillac,101.515,23.442,49.012,29.061,SOFT,4,True,False,1
+BOT,Cadillac,105.174,22.606,57.306,25.262,SOFT,7,True,False,12
+BOT,Cadillac,112.643,24.233,52.596,35.814,SOFT,8,True,False,1
+PER,Cadillac,122.658,22.249,39.942,60.467,SOFT,8,True,False,1
