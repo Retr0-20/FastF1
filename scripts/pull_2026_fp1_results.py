@@ -12,7 +12,7 @@ YEAR = 2026
 EVENT = "Monaco"
 SESSION_TYPE = "FP1"
 
-OUTPUT_PATH = Path(f"data/processed/{YEAR}_{EVENT}_{SESSION_TYPE}_results.csv")
+OUTPUT_PATH = PROJECT_ROOT / f"data/processed/{YEAR}_{EVENT}_{SESSION_TYPE}_fastest_laps_by_driver.csv"
 OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
 
 

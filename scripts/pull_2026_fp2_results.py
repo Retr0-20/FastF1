@@ -12,7 +12,7 @@ YEAR = 2026
 EVENT = "Monaco"
 SESSION_TYPE = "FP2"
 
-OUTPUT_PATH = Path(f"data/processed/{YEAR}_{EVENT}_{SESSION_TYPE}_results.csv")
+OUTPUT_PATH = PROJECT_ROOT / f"data/processed/{YEAR}_{EVENT}_{SESSION_TYPE}_fastest_laps_by_driver.csv"
 OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
 
 
@@ -83,7 +83,7 @@ def pull_fp2_results():
 
     results.to_csv(OUTPUT_PATH, index=False)
 
-    print(f"\nSaved FP1 results to: {OUTPUT_PATH}")
+    print(f"\nSaved FP2 results to: {OUTPUT_PATH}")
     print(results.to_string(index=False))
 
 

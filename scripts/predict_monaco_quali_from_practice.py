@@ -3,7 +3,8 @@ from pathlib import Path
 import fastf1
 import pandas as pd
 
-CACHE_DIR = Path("fastf1_cache")
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+CACHE_DIR = PROJECT_ROOT / "fastf1_cache"
 CACHE_DIR.mkdir(exist_ok=True)
 fastf1.Cache.enable_cache(str(CACHE_DIR))
 
@@ -86,7 +87,7 @@ def build_fastest_valid_soft_laps(session, session_type, useful_columns):
     fp_laps = fp_laps[
         (fp_laps["IsAccurate"] == True) &
         (fp_laps["Deleted"] == False) &
-        (fp_laps["Compound"] == "SOFT") &
+        # (fp_laps["Compound"] == "SOFT") &
         (fp_laps["TyreLife"] <= 10)
     ]
 
@@ -210,27 +211,57 @@ def get_best_lap_per_driver(csv_path, session_type):
     laps = pd.read_csv(csv_path)
 
     laps = laps.sort_values("LapTimeSeconds")
+
+    # Best complete lap per driver
     best_laps = laps.groupby(["Driver", "Team"]).first().reset_index()
 
-    best_laps = best_laps[[
-        "Driver",
-        "Team",
-        "LapTimeSeconds"
-    ]]
+    # Best individual sectors per driver
+    best_sectors = (
+        laps.groupby(["Driver", "Team"])
+        .agg(
+                best_sector1_seconds=("Sector1Seconds", "min"),
+                best_sector2_seconds=("Sector2Seconds", "min"),
+                best_sector3_seconds=("Sector3Seconds", "min")
+        ).reset_index()
+    )
+    
+    # Merge best complete lap with best individual sectors
+    best_laps = best_laps.merge(
+        best_sectors,
+        on=["Driver", "Team"],
+        how="left"
+    )
 
+    # Rename actual best lap column
     best_laps = best_laps.rename(columns={
         "LapTimeSeconds": f"best_{session_type}_lap_seconds"
     })
 
+    # Create readable actual best lap
     best_laps[f"best_{session_type}_lap"] = best_laps[
         f"best_{session_type}_lap_seconds"
     ].apply(seconds_to_lap_time)
 
+    # Calculate theoretical best lap
+    best_laps[f"best_{session_type}_theoretical_seconds"] = (
+        best_laps["best_sector1_seconds"]
+        + best_laps["best_sector2_seconds"]
+        + best_laps["best_sector3_seconds"]
+    )
+
+    # Create readable theoretical best lap
+    best_laps[f"best_{session_type}_theoretical_lap"] = best_laps[
+        f"best_{session_type}_theoretical_seconds"
+    ].apply(seconds_to_lap_time)
+
+    # Keep useful driver-level features
     best_laps = best_laps[[
         "Driver",
         "Team",
         f"best_{session_type}_lap",
-        f"best_{session_type}_lap_seconds"
+        f"best_{session_type}_lap_seconds",
+        f"best_{session_type}_theoretical_lap",
+        f"best_{session_type}_theoretical_seconds"
     ]]
 
     return best_laps
@@ -262,17 +293,17 @@ fp1_display = build_fastest_valid_soft_laps(fp1, "FP1", useful_columns)
 fp2_display = build_fastest_valid_soft_laps(fp2, "FP2", useful_columns)
 fp3_display = build_fastest_valid_soft_laps(fp3, "FP3", useful_columns)
 
-if fp1_display is not None:
-    print("\nFP1 fastest valid soft laps:")
-    print(fp1_display.to_string(index=False))
+# if fp1_display is not None:
+#     print("\nFP1 fastest valid soft laps:")
+#     print(fp1_display.to_string(index=False))
 
-if fp2_display is not None:
-    print("\nFP2 fastest valid soft laps:")
-    print(fp2_display.to_string(index=False))
+# if fp2_display is not None:
+#     print("\nFP2 fastest valid soft laps:")
+#     print(fp2_display.to_string(index=False))
 
-if fp3_display is not None:
-    print("\nFP3 fastest valid soft laps:")
-    print(fp3_display.to_string(index=False))
+# if fp3_display is not None:
+#     print("\nFP3 fastest valid soft laps:")
+#     print(fp3_display.to_string(index=False))
 
 fp1_best = get_best_lap_per_driver(
     practice_laps_path(YEAR, EVENT, "FP1"),
@@ -301,8 +332,8 @@ practice_features = practice_features.merge(
     how="outer"
 )
 
-print("\nBest practice laps per driver:")
-print(practice_features.to_string(index=False))
+# print("\nBest practice laps per driver:")
+# print(practice_features.to_string(index=False))
 
 output_path = practice_driver_features_path(YEAR, EVENT)
 practice_features.to_csv(output_path, index=False)
