@@ -3,7 +3,8 @@ from pathlib import Path
 import fastf1
 import pandas as pd
 
-CACHE_DIR = Path("fastf1_cache")
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+CACHE_DIR = PROJECT_ROOT / "fastf1_cache"
 CACHE_DIR.mkdir(exist_ok=True)
 fastf1.Cache.enable_cache(str(CACHE_DIR))
 
@@ -32,7 +33,7 @@ def seconds_to_lap_time(seconds):
     return f"{minutes}:{remaining_seconds:06.3f}"
 
 
-def pull_fp1_results():
+def pull_fp2_results():
     session = fastf1.get_session(YEAR, EVENT, SESSION_TYPE)
     session.load()
 
@@ -86,4 +87,4 @@ def pull_fp1_results():
     print(results.to_string(index=False))
 
 
-pull_fp1_results()
+pull_fp2_results()

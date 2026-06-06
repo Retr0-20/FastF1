@@ -1,5 +1,4 @@
 from pathlib import Path
-
 import fastf1
 import pandas as pd
 
@@ -10,7 +9,7 @@ fastf1.Cache.enable_cache(str(CACHE_DIR))
 
 YEAR = 2026
 EVENT = "Monaco"
-SESSION_TYPE = "FP1"
+SESSION_TYPE = "FP3"
 
 OUTPUT_PATH = Path(f"data/processed/{YEAR}_{EVENT}_{SESSION_TYPE}_results.csv")
 OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
@@ -33,7 +32,7 @@ def seconds_to_lap_time(seconds):
     return f"{minutes}:{remaining_seconds:06.3f}"
 
 
-def pull_fp1_results():
+def pull_fp3_results():
     session = fastf1.get_session(YEAR, EVENT, SESSION_TYPE)
     session.load()
 
@@ -87,4 +86,4 @@ def pull_fp1_results():
     print(results.to_string(index=False))
 
 
-pull_fp1_results()
+pull_fp3_results()
