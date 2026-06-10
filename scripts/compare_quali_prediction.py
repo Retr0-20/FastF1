@@ -31,10 +31,14 @@ comparison = comparison[[
     "prediction_score",
 ]]
 
+pole_position = comparison['actual_quali_position'] == 1
 exact_matches = (comparison["position_error"] == 0).sum()
 total_drivers = len(comparison)
+pole_driver = comparison["Driver"][comparison["actual_quali_position"] == 1]
 comparison = comparison.sort_values("predicted_quali_position")
 
 print("\nPrediction vs Actual Qualifying:")
 print(comparison.to_string(index=False))
 print(f"\n{exact_matches} out of {total_drivers} predicted CORRECTLY...")
+print(f"\n{comparison.head(3)}")
+print(f"\nThe Driver on Pole is: {pole_driver.iloc[0]}")
