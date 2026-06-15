@@ -88,7 +88,7 @@ def build_fastest_valid_soft_laps(session, session_type, useful_columns):
         (fp_laps["IsAccurate"] == True) &
         (fp_laps["Deleted"] == False) &
         # (fp_laps["Compound"] == "SOFT") &
-        (fp_laps["TyreLife"] <= 10)
+        (fp_laps["TyreLife"] <= 15)
     ]
 
     # Sort before formatting/converting
@@ -166,40 +166,23 @@ def predict_quali_from_practice(practice_features):
     prediction["prediction_score"] = 0
     prediction["weight_total"] = 0
 
-    if "best_FP1_lap_seconds" in prediction.columns:
-        prediction["prediction_score"] += prediction["best_FP1_lap_seconds"] * 0.15
-        prediction["weight_total"] += 0.15
-    
-    if "best_FP2_lap_seconds" in prediction.columns:
-        prediction["prediction_score"] += prediction["best_FP2_lap_seconds"] * 0.25
-        prediction["weight_total"] += 0.25
+    def safe_weight(col, weight):
+        if col in prediction.columns:
+            valid = prediction[col].notna()
+            prediction["prediction_score"] += prediction[col].fillna(0) * weight
+            prediction["weight_total"] += valid.astype(int) * weight
 
-    if "best_FP3_lap_seconds" in prediction.columns:
-        prediction["prediction_score"] += prediction["best_FP3_lap_seconds"] * 0.60
-        prediction["weight_total"] += 0.60
+    safe_weight("best_FP1_lap_seconds", 0.15)
+    safe_weight("best_FP2_lap_seconds", 0.25)
+    safe_weight("best_FP3_lap_seconds", 0.60)
 
-    # normalise prediction
-    prediction["prediction_score"] = prediction["prediction_score"] / prediction["weight_total"]
+    prediction["prediction_score"] = (
+        prediction["prediction_score"] /
+        prediction["weight_total"].replace(0, pd.NA)
+    )
 
-    # sort by prediction_score
     prediction = prediction.sort_values("prediction_score").reset_index(drop=True)
-
-    # add predicted_quali_position
     prediction["predicted_quali_position"] = range(1, len(prediction) + 1)
-
-    # sort values by predicted_quali_position
-    prediction = prediction.sort_values("predicted_quali_position")
-
-    # save to CSV
-    prediction = prediction [[
-        "predicted_quali_position",
-        "Driver",
-        "Team",
-        "prediction_score",
-        "best_FP1_lap",
-        "best_FP2_lap",
-        "best_FP3_lap",
-    ]]
 
     return prediction
 
@@ -213,11 +196,11 @@ def get_best_lap_per_driver(csv_path, session_type):
     laps = laps.sort_values("LapTimeSeconds")
 
     # Best complete lap per driver
-    best_laps = laps.groupby(["Driver", "Team"]).first().reset_index()
+    best_laps = laps.groupby(["Driver"]).first().reset_index()
 
     # Best individual sectors per driver
     best_sectors = (
-        laps.groupby(["Driver", "Team"])
+        laps.groupby(["Driver"])
         .agg(
                 best_sector1_seconds=("Sector1Seconds", "min"),
                 best_sector2_seconds=("Sector2Seconds", "min"),
@@ -228,7 +211,7 @@ def get_best_lap_per_driver(csv_path, session_type):
     # Merge best complete lap with best individual sectors
     best_laps = best_laps.merge(
         best_sectors,
-        on=["Driver", "Team"],
+        on=["Driver"],
         how="left"
     )
 
@@ -320,15 +303,17 @@ fp3_best = get_best_lap_per_driver(
     "FP3"
 )
 
+fp1_best = fp1_best[fp1_best["Driver"].isin(fp2_best["Driver"])]
+
 practice_features = fp1_best.merge(
     fp2_best,
-    on=["Driver", "Team"],
+    on=["Driver"],
     how="outer"
 )
 
 practice_features = practice_features.merge(
     fp3_best,
-    on=["Driver", "Team"],
+    on=["Driver"],
     how="outer"
 )
 
@@ -354,3 +339,6 @@ quali_prediction.to_csv(prediction_path, index=False)
 
 print("\nSaved qualifying prediction:")
 print(prediction_path)
+
+# print(practice_features.head())
+# print(practice_features.columns.tolist())
