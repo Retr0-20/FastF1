@@ -8,62 +8,75 @@ fp2 = pd.read_csv("/Users/dylancourt/Coding/FastF1/data/processed/2026_Austria_F
 
 fp3 = pd.read_csv("/Users/dylancourt/Coding/FastF1/data/processed/2026_Austria_FP3_fastest_laps_by_driver.csv")
 
-comparison = fp2.merge(
-    fp1,
-    on=["Driver", "Team"],
-    how="left"
-)
-
-comparison = fp3.merge(
+comparison = fp3.merge(fp1.merge(
     fp2,
     on=["Driver", "Team"],
-    how="left"
-)
+    how="right"
+), on=["Driver", "Team"], how="right")
 
-comparison["time_difference_Sector1"] = (
-    comparison["Sector1Time_y"] - comparison["Sector1Time_x"]
+comparison["S1Time_FP1"] = (
+    comparison["Sector1Time_x"]
 ).abs()
 
-comparison["time_difference_Sector2"] = (
-    comparison["Sector2Time_y"] - comparison["Sector2Time_x"]
+comparison["S1Time_FP2"] = (
+    comparison["Sector1Time_y"]
 ).abs()
 
-comparison["time_difference_Sector3"] = (
-    comparison["Sector3Time_y"] - comparison["Sector3Time_x"]
+comparison["S1Time_FP3"] = (
+    comparison["Sector1Time"]
 ).abs()
 
-comparison["time_difference_overall"] = (
-    comparison["Sector3Time_y"] - comparison["Sector3Time_x"]
+comparison["S2Time_FP1"] = (
+    comparison["Sector2Time_x"]
+).abs()
+
+comparison["S2Time_FP2"] = (
+    comparison["Sector2Time_y"]
+).abs()
+
+comparison["S2Time_FP3"] = (
+    comparison["Sector2Time"]
+).abs()
+
+comparison["S3Time_FP1"] = (
+    comparison["Sector3Time_x"]
+).abs()
+
+comparison["S3Time_FP2"] = (
+    comparison["Sector3Time_y"]
+).abs()
+
+comparison["S3Time_FP3"] = (
+    comparison["Sector3Time"]
 ).abs()
 
 comparison = comparison[[
     "Driver",
     "Team",
-    "Sector1Time_x",
-    "Sector2Time_x",
-    "Sector3Time_x",
-    "Sector1Time_y",
-    "Sector2Time_y",
-    "Sector3Time_y",
-    "time_difference_Sector1",
-    "time_difference_Sector2",
-    "time_difference_Sector3",
-    "time_difference_overall"
+    "S1Time_FP1",
+    "S1Time_FP2",
+    "S1Time_FP3",
+    "S2Time_FP1",
+    "S2Time_FP2",
+    "S2Time_FP3",
+    "S3Time_FP1",
+    "S3Time_FP2",
+    "S3Time_FP3"
 ]]
 
 comparison = comparison.rename(columns={
-    "Sector1Time_x": "Sector1TimeFP2",
-    "Sector2Time_x": "Sector2TimeFP2",
-    "Sector3Time_x": "Sector3TimeFP2",
-    "Sector1Time_y": "Sector1TimeFP1",
-    "Sector2Time_y": "Sector2TimeFP1",
-    "Sector3Time_y": "Sector3TimeFP1",
-    "time_difference_Sector1": "Sector1Time_Difference",
-    "time_difference_Sector2": "Sector2Time_Difference",
-    "time_difference_Sector3": "Sector3Time_Difference"
+    "S1Time_FP1": "S1Time_FP1",
+    "S1Time_FP2": "S1Time_FP2",
+    "S1Time_FP3": "S1Time_FP3",
+    "S2Time_FP1": "S2Time_FP1",
+    "S2Time_FP2": "S2Time_FP2",
+    "S2Time_FP3": "S2Time_FP3",
+    "S3Time_FP1": "S3Time_FP1",
+    "S3Time_FP2": "S3Time_FP2",
+    "S3Time_FP3": "S3Time_FP3"
 })
 
-comparison = comparison.sort_values("time_difference_overall", ascending=False)
+# comparison = comparison.sort_values("S3Time_FP3", ascending=True)
 
-print("\nFP1 vs FP2 Sector Times:")
+print("\nFP1 vs FP2 vs FP3 Sector Times:")
 print(comparison.to_string(index=False))
