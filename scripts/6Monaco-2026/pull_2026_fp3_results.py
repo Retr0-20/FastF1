@@ -1,4 +1,5 @@
 from pathlib import Path
+
 import fastf1
 import pandas as pd
 
@@ -63,11 +64,17 @@ def pull_fp3_results():
         "LapTimeSeconds",
         "Compound",
         "TyreLife",
-        "TrackStatus"
+        "TrackStatus",
+        "Sector1Time",
+        "Sector2Time",
+        "Sector3Time"
     ]]
 
     results = results.sort_values("LapTimeSeconds").reset_index(drop=True)
     results["Position"] = range(1, len(results) + 1)
+    results["Sector1Time"] = results["Sector1Time"].apply(time_to_seconds)
+    results["Sector2Time"] = results["Sector2Time"].apply(time_to_seconds)
+    results["Sector3Time"] = results["Sector3Time"].apply(time_to_seconds)
 
     results = results[[
         "Position",
@@ -77,7 +84,10 @@ def pull_fp3_results():
         "LapTimeSeconds",
         "Compound",
         "TyreLife",
-        "TrackStatus"
+        "TrackStatus",
+        "Sector1Time",
+        "Sector2Time",
+        "Sector3Time"
     ]]
 
     results.to_csv(OUTPUT_PATH, index=False)

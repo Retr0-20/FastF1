@@ -8,7 +8,7 @@ CACHE_DIR.mkdir(exist_ok=True)
 fastf1.Cache.enable_cache(str(CACHE_DIR))
 
 YEAR = 2026
-EVENT = "Austria"
+EVENT = "Barcelona"
 SESSION_TYPE = "R"
 
 OUTPUT_PATH = PROJECT_ROOT / f"data/processed/{YEAR}_{EVENT}_{SESSION_TYPE}_results.csv"

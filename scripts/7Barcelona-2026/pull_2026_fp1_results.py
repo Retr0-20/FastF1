@@ -9,8 +9,8 @@ CACHE_DIR.mkdir(exist_ok=True)
 fastf1.Cache.enable_cache(str(CACHE_DIR))
 
 YEAR = 2026
-EVENT = "Austria"
-SESSION_TYPE = "FP3"
+EVENT = "Barcelona"
+SESSION_TYPE = "FP1"
 
 OUTPUT_PATH = PROJECT_ROOT / f"data/processed/{YEAR}_{EVENT}_{SESSION_TYPE}_fastest_laps_by_driver.csv"
 OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
@@ -33,7 +33,7 @@ def seconds_to_lap_time(seconds):
     return f"{minutes}:{remaining_seconds:06.3f}"
 
 
-def pull_fp3_results():
+def pull_fp1_results():
     session = fastf1.get_session(YEAR, EVENT, SESSION_TYPE)
     session.load()
 
@@ -92,8 +92,8 @@ def pull_fp3_results():
 
     results.to_csv(OUTPUT_PATH, index=False)
 
-    print(f"\nSaved FP3 results to: {OUTPUT_PATH}")
+    print(f"\nSaved FP1 results to: {OUTPUT_PATH}")
     print(results.to_string(index=False))
 
 
-pull_fp3_results()
+pull_fp1_results()

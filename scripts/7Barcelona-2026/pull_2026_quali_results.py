@@ -8,8 +8,8 @@ CACHE_DIR.mkdir(exist_ok=True)
 fastf1.Cache.enable_cache(str(CACHE_DIR))
 
 YEAR = 2026
-EVENT = "Austria"
-SESSION_TYPE = "R"
+EVENT = "Barcelona"
+SESSION_TYPE = "Q"
 
 OUTPUT_PATH = PROJECT_ROOT / f"data/processed/{YEAR}_{EVENT}_{SESSION_TYPE}_results.csv"
 OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
@@ -39,26 +39,43 @@ def seconds_to_sector_time(seconds):
     return f"{seconds:.3f}"
 
 
-def pull_race_results():
+def pull_quali_results():
     session = fastf1.get_session(YEAR, EVENT, SESSION_TYPE)
     session.load()
 
     results = session.results.copy()
 
+    results["Q1Seconds"] = results["Q1"].apply(time_to_seconds)
+    results["Q2Seconds"] = results["Q2"].apply(time_to_seconds)
+    results["Q3Seconds"] = results["Q3"].apply(time_to_seconds)
+
+    results["Q1"] = results["Q1Seconds"].apply(seconds_to_lap_time)
+    results["Q2"] = results["Q2Seconds"].apply(seconds_to_lap_time)
+    results["Q3"] = results["Q3Seconds"].apply(seconds_to_lap_time)
+
     results = results[[
         "Position",
         "Abbreviation",
-        "TeamName"
+        "FullName",
+        "TeamName",
+        "Q1",
+        "Q1Seconds",
+        "Q2",
+        "Q2Seconds",
+        "Q3",
+        "Q3Seconds",
+        "Status"
     ]]
 
     results = results.rename(columns={
         "Abbreviation": "Driver",
+        "FullName": "DriverName",
         "TeamName": "Team"
     })
 
     results.to_csv(OUTPUT_PATH, index=False)
 
-    print(f"\nSaved Race results to: {OUTPUT_PATH}")
+    print(f"\nSaved Quali results to: {OUTPUT_PATH}")
     print(results.to_string(index=False))
 
-pull_race_results()
+pull_quali_results()
