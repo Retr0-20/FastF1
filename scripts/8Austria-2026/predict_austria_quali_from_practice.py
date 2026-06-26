@@ -14,7 +14,7 @@ fastf1.Cache.enable_cache(str(CACHE_DIR))
 
 PRACTICE_SESSIONS = ["FP1", "FP2", "FP3"]
 YEAR = 2026
-EVENT = "Barcelona"
+EVENT = "Austria"
 
 
 # ---------------------------------------------------------------------
