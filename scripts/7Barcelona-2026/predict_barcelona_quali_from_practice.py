@@ -37,11 +37,13 @@ def load_practice_session(year, event, session_type):
 # ---------------------------------------------------------------------
 
 def practice_laps_path(year, event, session_type):
-    return Path(f"data/processed/{year}_{event}_{session_type}_fastest_soft_laps.csv")
+    return PROJECT_ROOT / "data" / "processed" / \
+        f"{year}_{event}_{session_type}_fastest_soft_laps.csv"
 
 
 def practice_driver_features_path(year, event):
-    return Path(f"data/processed/{year}_{event}_practice_driver_features.csv")
+    return PROJECT_ROOT / "data" / "processed" / \
+        f"{year}_{event}_practice_driver_features.csv"
 
 
 # ---------------------------------------------------------------------
@@ -332,7 +334,12 @@ quali_prediction = predict_quali_from_practice(practice_features)
 print("\nPredicted Qualifying Order from Practice Sessions:")
 print(quali_prediction.to_string(index=False))
 
-prediction_path = Path(f"data/predictions/{YEAR}_{EVENT}_quali_prediction_from_practice.csv")
+prediction_path = (
+    PROJECT_ROOT
+    / "data"
+    / "predictions"
+    / f"{YEAR}_{EVENT}_quali_prediction_from_practice.csv"
+)
 prediction_path.parent.mkdir(parents=True, exist_ok=True)
 
 quali_prediction.to_csv(prediction_path, index=False)

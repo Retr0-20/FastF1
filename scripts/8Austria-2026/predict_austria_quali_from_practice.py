@@ -15,6 +15,7 @@ fastf1.Cache.enable_cache(str(CACHE_DIR))
 PRACTICE_SESSIONS = ["FP1", "FP2", "FP3"]
 YEAR = 2026
 EVENT = "Austria"
+MAX_TYRE_LIFE = 15  # Max tyre life for qualifying-style laps
 
 
 # ---------------------------------------------------------------------
@@ -37,11 +38,13 @@ def load_practice_session(year, event, session_type):
 # ---------------------------------------------------------------------
 
 def practice_laps_path(year, event, session_type):
-    return Path(f"data/processed/{year}_{event}_{session_type}_fastest_soft_laps.csv")
+    return PROJECT_ROOT / "data" / "processed" / \
+        f"{year}_{event}_{session_type}_fastest_soft_laps.csv"
 
 
 def practice_driver_features_path(year, event):
-    return Path(f"data/processed/{year}_{event}_practice_driver_features.csv")
+    return PROJECT_ROOT / "data" / "processed" / \
+        f"{year}_{event}_practice_driver_features.csv"
 
 
 # ---------------------------------------------------------------------
@@ -76,7 +79,7 @@ def seconds_to_sector_time(seconds):
 # Practice lap extraction
 # ---------------------------------------------------------------------
 
-def build_fastest_valid_soft_laps(session, session_type, useful_columns):
+def extract_practice_laps(session, session_type, useful_columns):
     if session is None:
         return None
 
@@ -88,7 +91,7 @@ def build_fastest_valid_soft_laps(session, session_type, useful_columns):
         (fp_laps["IsAccurate"] == True) &
         (fp_laps["Deleted"] == False) &
         # (fp_laps["Compound"] == "SOFT") &
-        (fp_laps["TyreLife"] <= 15)
+        (fp_laps["TyreLife"] <= MAX_TYRE_LIFE)
     ]
 
     # Sort before formatting/converting
@@ -163,8 +166,8 @@ def build_fastest_valid_soft_laps(session, session_type, useful_columns):
 def predict_quali_from_practice(practice_features):
     prediction = practice_features.copy(deep=True)
 
-    prediction["prediction_score"] = 0
-    prediction["weight_total"] = 0
+    prediction["prediction_score"] = 0.0
+    prediction["weight_total"] = 0.0
 
     def safe_weight(col, weight):
         if col in prediction.columns:
@@ -181,6 +184,7 @@ def predict_quali_from_practice(practice_features):
         prediction["weight_total"].replace(0, pd.NA)
     )
 
+    prediction = prediction.dropna(subset=["prediction_score"])
     prediction = prediction.sort_values("prediction_score").reset_index(drop=True)
     prediction["predicted_quali_position"] = range(1, len(prediction) + 1)
 
@@ -268,42 +272,41 @@ useful_columns = [
     "TrackStatus"
 ]
 
-fp1 = load_practice_session(YEAR, EVENT, "FP1")
-fp2 = load_practice_session(YEAR, EVENT, "FP2")
-fp3 = load_practice_session(YEAR, EVENT, "FP3")
+# For loop for each practice session to load, extract, and save the fastest laps and driver features
+session_displays = {}
+best_laps_by_session = {}
 
-fp1_display = build_fastest_valid_soft_laps(fp1, "FP1", useful_columns)
-fp2_display = build_fastest_valid_soft_laps(fp2, "FP2", useful_columns)
-fp3_display = build_fastest_valid_soft_laps(fp3, "FP3", useful_columns)
+for session_name in PRACTICE_SESSIONS:
+    session = load_practice_session(YEAR, EVENT, session_name)
 
-# if fp1_display is not None:
-#     print("\nFP1 fastest valid soft laps:")
-#     print(fp1_display.to_string(index=False))
+    session_displays[session_name] = extract_practice_laps(
+        session,
+        session_name,
+        useful_columns
+    )
 
-# if fp2_display is not None:
-#     print("\nFP2 fastest valid soft laps:")
-#     print(fp2_display.to_string(index=False))
+    best_laps_by_session[session_name] = get_best_lap_per_driver(
+        practice_laps_path(YEAR, EVENT, session_name),
+        session_name
+    )
 
-# if fp3_display is not None:
-#     print("\nFP3 fastest valid soft laps:")
-#     print(fp3_display.to_string(index=False))
+# Dictionary of session displays for terminal output
+fp1_display = session_displays["FP1"]
+fp2_display = session_displays["FP2"]
+fp3_display = session_displays["FP3"]
 
-fp1_best = get_best_lap_per_driver(
-    practice_laps_path(YEAR, EVENT, "FP1"),
-    "FP1"
-)
+# Dictionary of best laps per session
+fp1_best = best_laps_by_session["FP1"]
+fp2_best = best_laps_by_session["FP2"]
+fp3_best = best_laps_by_session["FP3"]
 
-fp2_best = get_best_lap_per_driver(
-    practice_laps_path(YEAR, EVENT, "FP2"),
-    "FP2"
-)
+# Filter to drivers who participated in at least one of FP2 or FP3 as well as FP1
+valid_drivers = set(fp2_best["Driver"]) | set(fp3_best["Driver"])
+fp1_best = fp1_best[fp1_best["Driver"].isin(valid_drivers)]
 
-fp3_best = get_best_lap_per_driver(
-    practice_laps_path(YEAR, EVENT, "FP3"),
-    "FP3"
-)
-
-fp1_best = fp1_best[fp1_best["Driver"].isin(fp2_best["Driver"])]
+# Removes the Team column from FP1 and FP2 to avoid duplicate columns when merging
+fp1_best = fp1_best.drop(columns=["Team"])
+fp2_best = fp2_best.drop(columns=["Team"])
 
 practice_features = fp1_best.merge(
     fp2_best,
@@ -317,8 +320,11 @@ practice_features = practice_features.merge(
     how="outer"
 )
 
-# print("\nBest practice laps per driver:")
-# print(practice_features.to_string(index=False))
+# Move Team right after Driver
+cols = practice_features.columns.tolist()
+cols.remove("Team")
+cols.insert(1, "Team")
+practice_features = practice_features[cols]
 
 output_path = practice_driver_features_path(YEAR, EVENT)
 practice_features.to_csv(output_path, index=False)
@@ -328,17 +334,30 @@ print(output_path)
 
 
 quali_prediction = predict_quali_from_practice(practice_features)
+# Move Team right after Driver in the prediction too
+cols = quali_prediction.columns.tolist()
+cols.remove("Team")
+cols.insert(1, "Team")
+quali_prediction = quali_prediction[cols]
 
-print("\nPredicted Qualifying Order from Practice Sessions:")
-print(quali_prediction.to_string(index=False))
-
-prediction_path = Path(f"data/predictions/{YEAR}_{EVENT}_quali_prediction_from_practice.csv")
+prediction_path = (
+    PROJECT_ROOT
+    / "data"
+    / "predictions"
+    / f"{YEAR}_{EVENT}_quali_prediction_from_practice.csv"
+)
 prediction_path.parent.mkdir(parents=True, exist_ok=True)
 
+# After predict_quali_from_practice(), save prediction first
 quali_prediction.to_csv(prediction_path, index=False)
+
+# Create CLEAN display version (ONLY seconds, human-readable preview)
+display_output = quali_prediction[['Driver', 'Team', 'best_FP1_lap', 'best_FP1_theoretical_lap',
+                                   'best_FP2_lap', 'best_FP2_theoretical_lap', 'best_FP3_lap', 'best_FP3_theoretical_lap',
+                                   'prediction_score']]
+
+print("\nPredicted Qualifying Order (Clean Format):")
+print(display_output.to_string(index=False))
 
 print("\nSaved qualifying prediction:")
 print(prediction_path)
-
-# print(practice_features.head())
-# print(practice_features.columns.tolist())
