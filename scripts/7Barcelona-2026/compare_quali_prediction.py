@@ -2,9 +2,9 @@ from pathlib import Path
 
 import pandas as pd
 
-prediction = pd.read_csv("data/predictions/2026_Monaco_quali_prediction_from_practice.csv")
+prediction = pd.read_csv("data/predictions/2026_Barcelona_quali_prediction_from_practice.csv")
 
-quali_results = pd.read_csv("data/processed/2026_Monaco_Q_results.csv")
+quali_results = pd.read_csv("data/processed/2026_Barcelona_Q_results.csv")
 
 comparison = prediction.merge(
     quali_results,

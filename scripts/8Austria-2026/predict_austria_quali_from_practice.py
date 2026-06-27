@@ -352,7 +352,7 @@ prediction_path.parent.mkdir(parents=True, exist_ok=True)
 quali_prediction.to_csv(prediction_path, index=False)
 
 # Create CLEAN display version (ONLY seconds, human-readable preview)
-display_output = quali_prediction[['Driver', 'Team', 'best_FP1_lap', 'best_FP1_theoretical_lap',
+display_output = quali_prediction[['predicted_quali_position', 'Driver', 'Team', 'best_FP1_lap', 'best_FP1_theoretical_lap',
                                    'best_FP2_lap', 'best_FP2_theoretical_lap', 'best_FP3_lap', 'best_FP3_theoretical_lap',
                                    'prediction_score']]
 
