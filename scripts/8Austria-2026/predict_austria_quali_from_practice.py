@@ -332,7 +332,6 @@ practice_features.to_csv(output_path, index=False)
 print("\nSaved practice driver features:")
 print(output_path)
 
-
 quali_prediction = predict_quali_from_practice(practice_features)
 # Move Team right after Driver in the prediction too
 cols = quali_prediction.columns.tolist()
