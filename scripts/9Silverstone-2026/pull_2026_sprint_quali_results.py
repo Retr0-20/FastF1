@@ -59,11 +59,8 @@ def pull_quali_results():
         "FullName",
         "TeamName",
         "Q1",
-        "Q1Seconds",
         "Q2",
-        "Q2Seconds",
         "Q3",
-        "Q3Seconds",
         "Status"
     ]]
 
