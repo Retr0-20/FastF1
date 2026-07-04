@@ -58,7 +58,8 @@ def pull_race_results():
 
     results.to_csv(OUTPUT_PATH, index=False)
 
-    print(f"\nSaved Race results to: {OUTPUT_PATH}")
-    print(results.to_string(index=False))
+    print(f"\nRace results for {YEAR} {EVENT} {SESSION_TYPE}:")
+    print(f"Saved Race results to: {OUTPUT_PATH}\n")
+    print(results.to_string(index=False), "\n")
 
 pull_race_results()
