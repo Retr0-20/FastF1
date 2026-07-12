@@ -8,7 +8,7 @@ CACHE_DIR = PROJECT_ROOT / "fastf1_cache"
 CACHE_DIR.mkdir(exist_ok=True)
 fastf1.Cache.enable_cache(str(CACHE_DIR))
 
-YEAR = 2025
+YEAR = 2026
 EVENT = "Belgium"
 SESSION_TYPE = "FP1"
 
