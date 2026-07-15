@@ -15,7 +15,7 @@ import fastf1 as ff1
 # First, we define some variables that allow us to conveniently control what
 # we want to plot.
 YEAR = 2026
-EVENT = "Silverstone"
+EVENT = "Belgium"
 SESSION_TYPE = 'R'
 driver = 'HAM'
 colormap = mpl.cm.plasma
