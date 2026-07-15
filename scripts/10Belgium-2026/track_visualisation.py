@@ -4,7 +4,7 @@ import fastf1
 from proton import session
 
 
-session = fastf1.get_session(2025, 'Belgium', 'Q')
+session = fastf1.get_session(2026, 'Belgium', 'Q')
 session.load()
 
 ver_lap = session.laps.pick_drivers('VER').pick_fastest()
