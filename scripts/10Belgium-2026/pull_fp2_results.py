@@ -92,8 +92,8 @@ def pull_fp2_results():
 
     results.to_csv(OUTPUT_PATH, index=False)
 
-    print(f"\nSaved FP2 results to: {OUTPUT_PATH}")
-    print(results.to_string(index=False))
+    print(f"\nSaved FP2 results to: {OUTPUT_PATH}\n")
+    print(results.to_string(index=False), "\n")
 
 
 pull_fp2_results()
