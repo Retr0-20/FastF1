@@ -56,6 +56,17 @@ def pull_race_results():
         "TeamName": "Team"
     })
 
+    value = 25
+    if(results['Position'].iloc[0] == value):
+        results.insert(1, "Points", [25])
+    
+    # results = results[[
+    #     "Position",
+    #     "Abbreviation",
+    #     "TeamName",
+    #     "Points"
+    # ]]
+
     results.to_csv(OUTPUT_PATH, index=False)
 
     print(f"\nSaved Race results to: {OUTPUT_PATH}")
