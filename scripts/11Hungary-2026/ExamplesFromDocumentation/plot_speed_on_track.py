@@ -8,12 +8,12 @@ import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib.collections import LineCollection
 
-import fastf1 as ff1
+import fastf1 as ff1  # type: ignore[import-not-found]
 
 ##############################################################################
 # First, we define some variables that allow us to conveniently control what
 # we want to plot.
-YEAR = 2024
+YEAR = 2026
 EVENT = "Hungary"
 SESSION_TYPE = 'R'
 driver = 'HAM'
