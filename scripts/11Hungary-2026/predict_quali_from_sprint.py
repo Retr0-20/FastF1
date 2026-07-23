@@ -14,7 +14,7 @@ fastf1.Cache.enable_cache(str(CACHE_DIR))
 
 PRACTICE_SESSIONS = ["FP1", "SQ"]
 YEAR = 2026
-EVENT = "Belgium"
+EVENT = "Hungary"
 MAX_TYRE_LIFE = 15  # Max tyre life for qualifying-style laps
 
 
