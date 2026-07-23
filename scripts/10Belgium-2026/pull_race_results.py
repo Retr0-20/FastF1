@@ -1,6 +1,6 @@
 from pathlib import Path
-import fastf1
-import pandas as pd
+import fastf1  # type: ignore[import-not-found]
+import pandas as pd  # type: ignore[import-not-found]
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 CACHE_DIR = PROJECT_ROOT / "fastf1_cache"
@@ -56,16 +56,20 @@ def pull_race_results():
         "TeamName": "Team"
     })
 
-    value = 25
-    if(results['Position'].iloc[0] == value):
-        results.insert(1, "Points", [25])
-    
-    # results = results[[
-    #     "Position",
-    #     "Abbreviation",
-    #     "TeamName",
-    #     "Points"
-    # ]]
+    points_map = {
+        1: 25,
+        2: 18,
+        3: 15,
+        4: 12,
+        5: 10,
+        6: 8,
+        7: 6,
+        8: 4,
+        9: 2,
+        10: 1
+    }
+
+    results['Points'] = results['Position'].map(points_map).fillna(0).astype(int)
 
     results.to_csv(OUTPUT_PATH, index=False)
 
