@@ -1,5 +1,12 @@
-fastf1_cache/
+# Python
 __pycache__/
-*.pyc
-.venv/
-.env
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environments
+venv/
+env/
+.env/
+f1-env/
+*/f1-env/
