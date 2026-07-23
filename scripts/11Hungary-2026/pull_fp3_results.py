@@ -9,7 +9,7 @@ CACHE_DIR.mkdir(exist_ok=True)
 fastf1.Cache.enable_cache(str(CACHE_DIR))
 
 YEAR = 2026
-EVENT = "Belgium"
+EVENT = "Hungary"
 SESSION_TYPE = "FP3"
 
 OUTPUT_PATH = PROJECT_ROOT / f"data/processed/{YEAR}_{EVENT}_{SESSION_TYPE}_fastest_laps_by_driver.csv"
