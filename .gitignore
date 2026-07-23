@@ -9,4 +9,7 @@ venv/
 env/
 .env/
 f1-env/
-*/f1-env/
+*/f1-env/fastf1_cache/
+scripts/fastf1_cache/
+*.ff1pkl
+*.sqlite
