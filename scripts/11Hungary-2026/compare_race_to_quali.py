@@ -4,9 +4,8 @@ import pandas as pd
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
-quali_results = pd.read_csv(PROJECT_ROOT / "data" / "processed" / "2026_Silverstone_Q_results.csv")
-race_results = pd.read_csv(PROJECT_ROOT / "data" / "processed" / "2026_Silverstone_R_results.csv")
-
+quali_results = pd.read_csv(PROJECT_ROOT / "data" / "processed" / "2026_Hungary_Q_results.csv")
+race_results = pd.read_csv(PROJECT_ROOT / "data" / "processed" / "2026_Hungary_R_results.csv")
 comparison = race_results.merge(
     quali_results,
     on=["Driver"],
