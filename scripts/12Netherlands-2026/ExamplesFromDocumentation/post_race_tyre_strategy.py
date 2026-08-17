@@ -4,7 +4,7 @@ from fastf1 import plotting
 
 plotting.setup_mpl(color_scheme='fastf1')
 
-session = fastf1.get_session(2026, "Belgium", 'R')
+session = fastf1.get_session(2026, "Netherlands", 'R')
 session.load()
 laps = session.laps
 
@@ -38,7 +38,7 @@ for driver in drivers:
         )
         previous_stint_end += row["StintLength"]
 
-plt.title("2026 Belgium GP - Tire Strategies")
+plt.title("2026 Netherlands GP - Tire Strategies")
 plt.xlabel("Lap Number")
 plt.grid(False)
 ax.invert_yaxis()

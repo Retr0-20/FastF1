@@ -13,7 +13,7 @@ import fastf1 as ff1  # type: ignore[import-not-found]
 ##############################################################################
 # First, we define some variables that allow us to conveniently control what
 # we want to plot.
-YEAR = 2025
+YEAR = 2026
 EVENT = "Netherlands"
 SESSION_TYPE = 'R'
 driver = 'HAM'

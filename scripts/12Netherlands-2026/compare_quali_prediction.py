@@ -4,8 +4,8 @@ import pandas as pd
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
-prediction = pd.read_csv(PROJECT_ROOT / "data" / "predictions" / "2026_Silverstone_quali_prediction_from_practice.csv")
-quali_results = pd.read_csv(PROJECT_ROOT / "data" / "processed" / "2026_Silverstone_Q_results.csv")
+prediction = pd.read_csv(PROJECT_ROOT / "data" / "predictions" / "2026_Netherlands_quali_prediction_from_practice.csv")
+quali_results = pd.read_csv(PROJECT_ROOT / "data" / "processed" / "2026_Netherlands_Q_results.csv")
 
 comparison = prediction.merge(
     quali_results,
