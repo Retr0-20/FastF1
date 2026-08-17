@@ -3,6 +3,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 *.so
+*.pyc
 
 # Virtual environments
 venv/
@@ -13,3 +14,4 @@ f1-env/
 scripts/fastf1_cache/
 *.ff1pkl
 *.sqlite
+.env
