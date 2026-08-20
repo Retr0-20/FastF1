@@ -1,12 +1,10 @@
 from pathlib import Path
-
+import config
 import pandas as pd
 
-fp1 = pd.read_csv("/Users/dylancourt/Coding/FastF1/data/processed/2026_Netherlands_FP1_fastest_laps_by_driver.csv")
-
-fp2 = pd.read_csv("/Users/dylancourt/Coding/FastF1/data/processed/2026_Netherlands_FP2_fastest_laps_by_driver.csv")
-
-fp3 = pd.read_csv("/Users/dylancourt/Coding/FastF1/data/processed/2026_Netherlands_FP3_fastest_laps_by_driver.csv")
+fp1 = pd.read_csv(config.PROJECT_ROOT / "data" / "processed" / "2026_Netherlands_FP1_fastest_laps_by_driver.csv")
+fp2 = pd.read_csv(config.PROJECT_ROOT / "data" / "processed" / "2026_Netherlands_FP2_fastest_laps_by_driver.csv")
+fp3 = pd.read_csv(config.PROJECT_ROOT / "data" / "processed" / "2026_Netherlands_FP3_fastest_laps_by_driver.csv")
 
 comparison = fp3.merge(fp1.merge(
     fp2,
