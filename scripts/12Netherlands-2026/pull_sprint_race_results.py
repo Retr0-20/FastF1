@@ -1,14 +1,15 @@
 from pathlib import Path
+import config
 import fastf1
 import pandas as pd
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
-CACHE_DIR = PROJECT_ROOT / "fastf1_cache"
+PROJECT_ROOT = config.PROJECT_ROOT
+CACHE_DIR = config.CACHE_DIR
 CACHE_DIR.mkdir(exist_ok=True)
 fastf1.Cache.enable_cache(str(CACHE_DIR))
 
-YEAR = 2026
-EVENT = "Netherlands"
+YEAR = config.YEAR
+EVENT = config.EVENT
 SESSION_TYPE = "S"
 
 OUTPUT_PATH = PROJECT_ROOT / f"data/processed/{YEAR}_{EVENT}_{SESSION_TYPE}_results.csv"

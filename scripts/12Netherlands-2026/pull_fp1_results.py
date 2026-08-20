@@ -1,5 +1,4 @@
 from pathlib import Path
-
 import config
 import fastf1
 import pandas as pd

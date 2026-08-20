@@ -1,8 +1,8 @@
 from pathlib import Path
-
+import config
 import pandas as pd
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
+PROJECT_ROOT = config.PROJECT_ROOT
 
 quali_results = pd.read_csv(PROJECT_ROOT / "data" / "processed" / "2026_Netherlands_Q_results.csv")
 race_results = pd.read_csv(PROJECT_ROOT / "data" / "processed" / "2026_Netherlands_R_results.csv")
