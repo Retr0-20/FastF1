@@ -10,7 +10,7 @@ fastf1.Cache.enable_cache(str(CACHE_DIR))
 
 YEAR = config.YEAR
 EVENT = config.EVENT
-SESSION_TYPE = "FP2"
+SESSION_TYPE = config.SESSION_TYPE
 
 OUTPUT_PATH = PROJECT_ROOT / f"data/processed/{YEAR}_{EVENT}_{SESSION_TYPE}_fastest_laps_by_driver.csv"
 OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
@@ -33,7 +33,7 @@ def seconds_to_lap_time(seconds):
     return f"{minutes}:{remaining_seconds:06.3f}"
 
 
-def pull_fp2_results():
+def pull_practice_results():
     session = fastf1.get_session(YEAR, EVENT, SESSION_TYPE)
     session.load()
 
@@ -92,8 +92,8 @@ def pull_fp2_results():
 
     results.to_csv(OUTPUT_PATH, index=False)
 
-    print(f"\nSaved FP2 results to: {OUTPUT_PATH}\n")
+    print(f"\nSaved Free Practice " f"{SESSION_TYPE}" " results to: " f"{OUTPUT_PATH}\n")
     print(results.to_string(index=False), "\n")
 
 
-pull_fp2_results()
+pull_practice_results()
