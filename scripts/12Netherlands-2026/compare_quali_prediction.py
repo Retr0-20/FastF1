@@ -36,7 +36,7 @@ pole_position = comparison['actual_quali_position'] == 1
 exact_matches = (comparison["position_error"] == 0).sum()
 total_drivers = len(comparison)
 pole_driver = comparison["Driver"][comparison["actual_quali_position"] == 1]
-comparison = comparison.sort_values("predicted_quali_position")
+comparison = comparison.sort_values("actual_quali_position")
 
 print("\nPrediction vs Actual Qualifying:")
 print(comparison.to_string(index=False))
