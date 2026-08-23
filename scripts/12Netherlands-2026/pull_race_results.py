@@ -10,7 +10,7 @@ fastf1.Cache.enable_cache(str(CACHE_DIR))
 
 YEAR = config.YEAR
 EVENT = config.EVENT
-SESSION_TYPE = "R"
+SESSION_TYPE = config.SESSION_TYPE
 
 OUTPUT_PATH = PROJECT_ROOT / f"data/processed/{YEAR}_{EVENT}_{SESSION_TYPE}_results.csv"
 OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
@@ -70,7 +70,21 @@ def pull_race_results():
         10: 1
     }
 
-    results['Points'] = results['Position'].map(points_map).fillna(0).astype(int)
+    points_map_sprint = {
+        1: 8,
+        2: 7,
+        3: 6,
+        4: 5,
+        5: 4,
+        6: 3,
+        7: 2,
+        8: 1
+    }
+
+    if config.SESSION_TYPE == "S":
+        results['Points'] = results['Position'].map(points_map_sprint).fillna(0).astype(int)
+    else:
+        results['Points'] = results['Position'].map(points_map).fillna(0).astype(int)
 
     results.to_csv(OUTPUT_PATH, index=False)
 
