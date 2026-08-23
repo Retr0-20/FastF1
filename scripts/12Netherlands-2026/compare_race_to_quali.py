@@ -28,6 +28,7 @@ comparison["position_diff"] = (
     comparison["race_position"] - comparison["quali_position"]
 ).abs()
 
+# Add a new column to indicate whether the predicted position is higher, lower, or the same as the actual position
 comparison["change_arrow"] = comparison.apply(
     lambda row: f"↑{row['position_diff']}" if row['quali_position'] 
         > row['race_position'] 
