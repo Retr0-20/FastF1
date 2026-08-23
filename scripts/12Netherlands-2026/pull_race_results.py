@@ -88,7 +88,13 @@ def pull_race_results():
 
     results.to_csv(OUTPUT_PATH, index=False)
 
-    print(f"\nSaved Race results to: {OUTPUT_PATH}")
+    if config.SESSION_TYPE == "S" and not results.empty:
+        print(f"\nSaved Sprint results to: {OUTPUT_PATH}")
+    elif config.SESSION_TYPE == "R" and not results.empty:
+        print(f"\nSaved Race results to: {OUTPUT_PATH}")
+    else:
+        print(f"\nNo results found for {YEAR} {EVENT} {SESSION_TYPE}.\n")
+    
     print(results.to_string(index=False))
 
 pull_race_results()
