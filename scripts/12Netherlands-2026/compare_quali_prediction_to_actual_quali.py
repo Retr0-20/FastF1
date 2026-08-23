@@ -2,6 +2,10 @@ from pathlib import Path
 import config
 import pandas as pd
 
+pd.set_option("display.max_rows", None)
+pd.set_option("display.width", 1000)
+pd.set_option("display.float_format", "{:.0f}".format)
+
 PROJECT_ROOT = config.PROJECT_ROOT
 
 prediction = pd.read_csv(PROJECT_ROOT / "data" / "predictions" / "2026_Netherlands_quali_prediction_from_practice.csv")
