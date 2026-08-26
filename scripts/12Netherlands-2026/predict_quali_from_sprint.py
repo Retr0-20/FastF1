@@ -6,6 +6,7 @@ import pandas as pd
 PROJECT_ROOT = config.PROJECT_ROOT
 CACHE_DIR = config.CACHE_DIR
 CACHE_DIR.mkdir(exist_ok=True)
+EVENT_FOLDER = config.get_event_folder()
 fastf1.Cache.enable_cache(str(CACHE_DIR))
 
 # ---------------------------------------------------------------------
@@ -126,7 +127,7 @@ def extract_practice_laps(session, session_type, useful_columns):
 
     csv_output["TyreLife"] = csv_output["TyreLife"].astype("Int64")
 
-    output_path = practice_laps_path(YEAR, EVENT, session_type)
+    output_path = practice_laps_path(EVENT_FOLDER, session_type)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     csv_output.to_csv(output_path, index=False)
 

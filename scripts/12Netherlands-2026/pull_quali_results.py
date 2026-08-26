@@ -11,8 +11,9 @@ fastf1.Cache.enable_cache(str(CACHE_DIR))
 YEAR = config.YEAR
 EVENT = config.EVENT
 SESSION_TYPE = config.SESSION_TYPE
+EVENT_FOLDER = config.get_event_folder()
 
-OUTPUT_PATH = PROJECT_ROOT / f"data/processed/{YEAR}_{EVENT}_{SESSION_TYPE}_results.csv"
+OUTPUT_PATH = PROJECT_ROOT / f"data/processed/{EVENT_FOLDER}/{SESSION_TYPE}_results.csv"
 OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
 
 
