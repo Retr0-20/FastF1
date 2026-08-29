@@ -12,41 +12,23 @@ comparison = fp3.merge(fp1.merge(
     how="right"
 ), on=["Driver", "Team"], how="right")
 
-comparison["S1Time_FP1"] = (
-    comparison["Sector1Time_x"]
-).abs()
+comparison["S1Time_FP1"] = comparison["Sector1Time_x"]
 
-comparison["S1Time_FP2"] = (
-    comparison["Sector1Time_y"]
-).abs()
+comparison["S1Time_FP2"] = comparison["Sector1Time_y"]
 
-comparison["S1Time_FP3"] = (
-    comparison["Sector1Time"]
-).abs()
+comparison["S1Time_FP3"] = comparison["Sector1Time"]
 
-comparison["S2Time_FP1"] = (
-    comparison["Sector2Time_x"]
-).abs()
+comparison["S2Time_FP1"] = comparison["Sector2Time_x"]
 
-comparison["S2Time_FP2"] = (
-    comparison["Sector2Time_y"]
-).abs()
+comparison["S2Time_FP2"] = comparison["Sector2Time_y"]
 
-comparison["S2Time_FP3"] = (
-    comparison["Sector2Time"]
-).abs()
+comparison["S2Time_FP3"] = comparison["Sector2Time"]
 
-comparison["S3Time_FP1"] = (
-    comparison["Sector3Time_x"]
-).abs()
+comparison["S3Time_FP1"] = comparison["Sector3Time_x"]
 
-comparison["S3Time_FP2"] = (
-    comparison["Sector3Time_y"]
-).abs()
+comparison["S3Time_FP2"] = comparison["Sector3Time_y"]
 
-comparison["S3Time_FP3"] = (
-    comparison["Sector3Time"]
-).abs()
+comparison["S3Time_FP3"] = comparison["Sector3Time"]
 
 comparison = comparison[[
     "Driver",
@@ -61,20 +43,6 @@ comparison = comparison[[
     "S3Time_FP2",
     "S3Time_FP3"
 ]]
-
-comparison = comparison.rename(columns={
-    "S1Time_FP1": "S1Time_FP1",
-    "S1Time_FP2": "S1Time_FP2",
-    "S1Time_FP3": "S1Time_FP3",
-    "S2Time_FP1": "S2Time_FP1",
-    "S2Time_FP2": "S2Time_FP2",
-    "S2Time_FP3": "S2Time_FP3",
-    "S3Time_FP1": "S3Time_FP1",
-    "S3Time_FP2": "S3Time_FP2",
-    "S3Time_FP3": "S3Time_FP3"
-})
-
-# comparison = comparison.sort_values("S3Time_FP3", ascending=True)
 
 print("\nFP1 vs FP2 vs FP3 Sector Times:")
 print(comparison.to_string(index=False))
