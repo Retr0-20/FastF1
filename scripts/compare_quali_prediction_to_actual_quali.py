@@ -2,14 +2,18 @@ from pathlib import Path
 import config
 import pandas as pd
 
+YEAR = config.YEAR
+EVENT = config.EVENT
+EVENT_FOLDER = config.get_event_folder()
+
 pd.set_option("display.max_rows", None)
 pd.set_option("display.width", 1000)
 pd.set_option("display.float_format", "{:.0f}".format)
 
 PROJECT_ROOT = config.PROJECT_ROOT
 
-prediction = pd.read_csv(PROJECT_ROOT / "data" / "predictions" / "2026_Netherlands_quali_prediction_from_practice.csv")
-quali_results = pd.read_csv(PROJECT_ROOT / "data" / "processed" / "2026_Netherlands_Q_results.csv")
+prediction = pd.read_csv(PROJECT_ROOT / "data" / "predictions" / EVENT_FOLDER / f"quali_prediction_from_practice.csv")
+quali_results = pd.read_csv(PROJECT_ROOT / "data" / "processed" / EVENT_FOLDER / f"Q_results.csv")
 
 comparison = prediction.merge(
     quali_results,

@@ -38,9 +38,9 @@ def load_practice_session(year, event, session_type):
 # Paths
 # ---------------------------------------------------------------------
 
-def practice_laps_path(year, event, session_type):
+def practice_laps_path(year, event):
     return PROJECT_ROOT / "data" / "processed" / \
-        f"{year}_{event}_{session_type}_fastest_soft_laps.csv"
+        f"{year}_{event}_fastest_soft_laps.csv"
 
 
 def practice_driver_features_path(year, event):
@@ -324,7 +324,8 @@ prediction_path = (
     PROJECT_ROOT
     / "data"
     / "predictions"
-    / f"{YEAR}_{EVENT}_quali_prediction_from_practice.csv"
+    / EVENT_FOLDER
+    / f"quali_prediction_from_practice.csv"
 )
 prediction_path.parent.mkdir(parents=True, exist_ok=True)
 

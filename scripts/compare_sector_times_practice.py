@@ -3,12 +3,11 @@ import config
 import pandas as pd
 
 PROJECT_ROOT = config.PROJECT_ROOT
-YEAR = config.YEAR
-EVENT = config.EVENT
+EVENT_FOLDER = config.get_event_folder()
 
-fp1 = pd.read_csv(config.PROJECT_ROOT / "data" / "processed" / config.get_event_folder() / f"FP1_fastest_laps_by_driver.csv")
-fp2 = pd.read_csv(config.PROJECT_ROOT / "data" / "processed" / config.get_event_folder() / f"FP2_fastest_laps_by_driver.csv")
-fp3 = pd.read_csv(config.PROJECT_ROOT / "data" / "processed" / config.get_event_folder() / f"FP3_fastest_laps_by_driver.csv")
+fp1 = pd.read_csv(PROJECT_ROOT / "data" / "processed" / EVENT_FOLDER / f"FP1_fastest_laps_by_driver.csv")
+fp2 = pd.read_csv(PROJECT_ROOT / "data" / "processed" / EVENT_FOLDER / f"FP2_fastest_laps_by_driver.csv")
+fp3 = pd.read_csv(PROJECT_ROOT / "data" / "processed" / EVENT_FOLDER / f"FP3_fastest_laps_by_driver.csv")
 
 # After reading CSVs, before merge
 fp1["Team"] = fp1["Team"].fillna("")

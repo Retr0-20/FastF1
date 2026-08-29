@@ -38,14 +38,11 @@ def load_practice_session(year, event, session_type):
 # Paths
 # ---------------------------------------------------------------------
 
-def practice_laps_path(year, event, session_type):
-    return PROJECT_ROOT / "data" / "processed" / \
-        f"{year}_{event}_{session_type}_fastest_soft_laps.csv"
+def practice_laps_path(session_type):
+    return PROJECT_ROOT / "data" / "processed" / EVENT_FOLDER / f"{session_type}_fastest_laps_by_driver.csv"
 
-
-def practice_driver_features_path(year, event):
-    return PROJECT_ROOT / "data" / "processed" / \
-        f"{year}_{event}_practice_driver_features.csv"
+def practice_driver_features_path():
+    return PROJECT_ROOT / "data" / "processed" / EVENT_FOLDER / "practice_driver_features.csv"
 
 
 # ---------------------------------------------------------------------
@@ -127,7 +124,7 @@ def extract_practice_laps(session, session_type, useful_columns):
 
     csv_output["TyreLife"] = csv_output["TyreLife"].astype("Int64")
 
-    output_path = practice_laps_path(EVENT_FOLDER, session_type)
+    output_path = practice_laps_path(session_type)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     csv_output.to_csv(output_path, index=False)
 
@@ -287,7 +284,7 @@ for session_name in PRACTICE_SESSIONS:
     )
 
     best_laps_by_session[session_name] = get_best_lap_per_driver(
-        practice_laps_path(YEAR, EVENT, session_name),
+        practice_laps_path(session_name),
         session_name
     )
 
@@ -327,7 +324,7 @@ cols.remove("Team")
 cols.insert(1, "Team")
 practice_features = practice_features[cols]
 
-output_path = practice_driver_features_path(YEAR, EVENT)
+output_path = practice_driver_features_path()
 practice_features.to_csv(output_path, index=False)
 
 print("\nSaved practice driver features:")
@@ -344,7 +341,8 @@ prediction_path = (
     PROJECT_ROOT
     / "data"
     / "predictions"
-    / f"{YEAR}_{EVENT}_quali_prediction_from_practice.csv"
+    / EVENT_FOLDER
+    / f"quali_prediction_from_practice.csv"
 )
 prediction_path.parent.mkdir(parents=True, exist_ok=True)
 
