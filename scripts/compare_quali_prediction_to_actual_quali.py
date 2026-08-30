@@ -2,19 +2,23 @@ from pathlib import Path
 import config
 import pandas as pd
 
-YEAR = config.YEAR
-EVENT = config.EVENT
-EVENT_FOLDER = config.get_event_folder()
-
 pd.set_option("display.max_rows", None)
 pd.set_option("display.width", 1000)
 pd.set_option("display.float_format", "{:.0f}".format)
 
+# ---------------------------------------------------------------------
+# Configurable information for Grand Prixs - config.py
+# ---------------------------------------------------------------------
+YEAR = config.YEAR
+EVENT = config.EVENT
+EVENT_FOLDER = config.get_event_folder()
 PROJECT_ROOT = config.PROJECT_ROOT
 
+# Pull and read the predicted qualifying positions and actual qualifying results CSVs
 prediction = pd.read_csv(PROJECT_ROOT / "data" / "predictions" / EVENT_FOLDER / f"quali_prediction_from_practice.csv")
 quali_results = pd.read_csv(PROJECT_ROOT / "data" / "processed" / EVENT_FOLDER / f"Q_results.csv")
 
+# Merge the prediction DataFrame with the actual qualifying results DataFrame on the "Driver" column
 comparison = prediction.merge(
     quali_results,
     on=["Driver"],
@@ -27,6 +31,7 @@ comparison = comparison.rename(columns={
     "Position": "actual_quali_position"
 })
 
+# Add a new column to calculate the absolute difference between predicted and actual qualifying positions
 comparison["position_error"] = (
     comparison["predicted_quali_position"] - comparison["actual_quali_position"]
 ).abs()
@@ -52,12 +57,16 @@ comparison = comparison[[
     "prediction_outcome"
 ]]
 
+# Pole position is the driver with actual_quali_position == 1
 pole_position = comparison['actual_quali_position'] == 1
+# Exact matches are those where position_error == 0
 exact_matches = (comparison["position_error"] == 0).sum()
 total_drivers = len(comparison)
+# Pole driver is the driver with actual_quali_position == 1 but also derives their name
 pole_driver = comparison["Driver"][comparison["actual_quali_position"] == 1]
 comparison = comparison.sort_values("actual_quali_position")
 
+# Print the comparison DataFrame to the console for debugging
 print("\nPrediction vs Actual Qualifying:")
 print(comparison.to_string(index=False))
 print(f"\n{exact_matches} out of {total_drivers} predicted CORRECTLY...")

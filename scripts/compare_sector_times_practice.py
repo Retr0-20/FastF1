@@ -2,14 +2,18 @@ from pathlib import Path
 import config
 import pandas as pd
 
+pd.set_option("display.max_rows", None)
+pd.set_option("display.width", 1000)
+
 PROJECT_ROOT = config.PROJECT_ROOT
 EVENT_FOLDER = config.get_event_folder()
 
+# Pull and read the fastest lap sector times for FP1, FP2, and FP3 from stored CSVs
 fp1 = pd.read_csv(PROJECT_ROOT / "data" / "processed" / EVENT_FOLDER / f"FP1_fastest_laps_by_driver.csv")
 fp2 = pd.read_csv(PROJECT_ROOT / "data" / "processed" / EVENT_FOLDER / f"FP2_fastest_laps_by_driver.csv")
 fp3 = pd.read_csv(PROJECT_ROOT / "data" / "processed" / EVENT_FOLDER / f"FP3_fastest_laps_by_driver.csv")
 
-# After reading CSVs, before merge
+# Fill NaN values in the "Team" column with an empty string to avoid issues during merging
 fp1["Team"] = fp1["Team"].fillna("")
 fp2["Team"] = fp2["Team"].fillna("")
 fp3["Team"] = fp3["Team"].fillna("")
@@ -21,23 +25,18 @@ comparison = fp3.merge(fp1.merge(
     how="right"
 ), on=["Driver"], how="right")
 
-comparison["S1Time_FP1"] = comparison["Sector1Time_x"]
+# Rename columns to indicate which session they belong to
+comparison["S1Time_FP1"] = comparison["Sector1Seconds_x"]
+comparison["S1Time_FP2"] = comparison["Sector1Seconds_y"]
+comparison["S1Time_FP3"] = comparison["Sector1Seconds"]
 
-comparison["S1Time_FP2"] = comparison["Sector1Time_y"]
+comparison["S2Time_FP1"] = comparison["Sector2Seconds_x"]
+comparison["S2Time_FP2"] = comparison["Sector2Seconds_y"]
+comparison["S2Time_FP3"] = comparison["Sector2Seconds"]
 
-comparison["S1Time_FP3"] = comparison["Sector1Time"]
-
-comparison["S2Time_FP1"] = comparison["Sector2Time_x"]
-
-comparison["S2Time_FP2"] = comparison["Sector2Time_y"]
-
-comparison["S2Time_FP3"] = comparison["Sector2Time"]
-
-comparison["S3Time_FP1"] = comparison["Sector3Time_x"]
-
-comparison["S3Time_FP2"] = comparison["Sector3Time_y"]
-
-comparison["S3Time_FP3"] = comparison["Sector3Time"]
+comparison["S3Time_FP1"] = comparison["Sector3Seconds_x"]
+comparison["S3Time_FP2"] = comparison["Sector3Seconds_y"]
+comparison["S3Time_FP3"] = comparison["Sector3Seconds"]
 
 comparison = comparison[[
     "Driver",
