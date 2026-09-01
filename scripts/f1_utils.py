@@ -12,7 +12,7 @@ def get_event_folder():
 # Utility functions for time conversions
 
 def time_to_seconds(value):
-    if str(value) == "NaT":
+    if value is None or pd.isna(value):
         return None
 
     # Convert a timedelta to seconds with millisecond precision 3rd decimal place
@@ -20,7 +20,7 @@ def time_to_seconds(value):
 
 
 def seconds_to_lap_time(seconds):
-    if seconds is None:
+    if seconds is None or pd.isna(seconds):
         return "N/A"
 
     # extract minutes through floor division and seconds through modulo - returning remaining seconds
@@ -32,7 +32,7 @@ def seconds_to_lap_time(seconds):
 
 
 def seconds_to_sector_time(seconds):
-    if seconds is None:
+    if seconds is None or pd.isna(seconds):
         return "N/A"
     # '0' - pad with leading zeroes, '6' - total width of 6 characters, '.3f' - 3 decimal places
     return f"{seconds:.3f}"
