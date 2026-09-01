@@ -37,7 +37,7 @@ def pull_practice_results():
     ]
 
     # Convert LapTime to seconds for easier comparison and sorting
-    laps["LapTimeSeconds"] = laps["LapTime"].apply(time_to_seconds)
+    laps["LapTimeSeconds"] = laps["LapTime"].apply(f1_utils.time_to_seconds)
 
     # Fastest valid lap per driver
     results = (
@@ -48,7 +48,7 @@ def pull_practice_results():
     )
 
     # Convert best lap time to seconds for easier comparison and sorting
-    results["BestLap"] = results["LapTimeSeconds"].apply(seconds_to_lap_time)
+    results["BestLap"] = results["LapTimeSeconds"].apply(f1_utils.seconds_to_lap_time)
 
     # Select relevant columns and sort by lap time
     results = results[[
@@ -68,9 +68,9 @@ def pull_practice_results():
     results = results.sort_values("LapTimeSeconds").reset_index(drop=True)
     results["Position"] = range(1, len(results) + 1)
     # Convert sector times to seconds for easier comparison and sorting
-    results["Sector1Time"] = results["Sector1Time"].apply(time_to_seconds)
-    results["Sector2Time"] = results["Sector2Time"].apply(time_to_seconds)
-    results["Sector3Time"] = results["Sector3Time"].apply(time_to_seconds)
+    results["Sector1Time"] = results["Sector1Time"].apply(f1_utils.time_to_seconds)
+    results["Sector2Time"] = results["Sector2Time"].apply(f1_utils.time_to_seconds)
+    results["Sector3Time"] = results["Sector3Time"].apply(f1_utils.time_to_seconds)
 
     # Append position to DataFrame
     results = results[[

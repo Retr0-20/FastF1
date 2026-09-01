@@ -23,7 +23,7 @@ This script enables you to edit global variables which indictate which session;
 This script contains 4 functions with appropriate names:
 
 def get_event_folder()
-    This function
+    This function 
 
 def time_to_seconds()
     This function
@@ -47,10 +47,8 @@ pull_practice_results.py
     Allows all 3 Free Practice (FP) sessions to be configured in config.py.
 
 pull_quali_results.py
-    This script pulls data such as: Position, Driver, Team, BestLap, 
-                                    LapTimeSeconds, Compound, TyreLife, 
-                                    TrackStatus, Sector1Time, Sector2Time 
-                                    and Sector3Time.
+    This script pulls data such as: Position Driver, DriverName, Team, Q1, Q1Seconds, 
+                                    Q2,  Q2Seconds, Q3, Q3Seconds, Status
     Allows both race qualifying and sprint qualifying formats to be configured in config.py.
 
 pull_race_results.py

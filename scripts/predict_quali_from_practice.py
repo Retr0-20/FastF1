@@ -69,16 +69,16 @@ def extract_practice_laps(session, session_type, useful_columns):
     fp_laps = fp_laps.sort_values("LapTime")
 
     # Numeric columns for modelling
-    fp_laps["LapTimeSeconds"] = fp_laps["LapTime"].apply(time_to_seconds)
-    fp_laps["Sector1Seconds"] = fp_laps["Sector1Time"].apply(time_to_seconds)
-    fp_laps["Sector2Seconds"] = fp_laps["Sector2Time"].apply(time_to_seconds)
-    fp_laps["Sector3Seconds"] = fp_laps["Sector3Time"].apply(time_to_seconds)
+    fp_laps["LapTimeSeconds"] = fp_laps["LapTime"].apply(f1_utils.time_to_seconds)
+    fp_laps["Sector1Seconds"] = fp_laps["Sector1Time"].apply(f1_utils.time_to_seconds)
+    fp_laps["Sector2Seconds"] = fp_laps["Sector2Time"].apply(f1_utils.time_to_seconds)
+    fp_laps["Sector3Seconds"] = fp_laps["Sector3Time"].apply(f1_utils.time_to_seconds)
 
     # Readable columns for display
-    fp_laps["LapTimeFormatted"] = fp_laps["LapTimeSeconds"].apply(seconds_to_lap_time)
-    fp_laps["Sector1Formatted"] = fp_laps["Sector1Seconds"].apply(seconds_to_sector_time)
-    fp_laps["Sector2Formatted"] = fp_laps["Sector2Seconds"].apply(seconds_to_sector_time)
-    fp_laps["Sector3Formatted"] = fp_laps["Sector3Seconds"].apply(seconds_to_sector_time)
+    fp_laps["LapTimeFormatted"] = fp_laps["LapTimeSeconds"].apply(f1_utils.seconds_to_lap_time)
+    fp_laps["Sector1Formatted"] = fp_laps["Sector1Seconds"].apply(f1_utils.seconds_to_sector_time)
+    fp_laps["Sector2Formatted"] = fp_laps["Sector2Seconds"].apply(f1_utils.seconds_to_sector_time)
+    fp_laps["Sector3Formatted"] = fp_laps["Sector3Seconds"].apply(f1_utils.seconds_to_sector_time)
 
     # Save model-ready CSV
     csv_output = fp_laps[[
@@ -198,7 +198,7 @@ def get_best_lap_per_driver(csv_path, session_type):
     # Create readable actual best lap
     best_laps[f"best_{session_type}_lap"] = best_laps[
         f"best_{session_type}_lap_seconds"
-    ].apply(seconds_to_lap_time)
+    ].apply(f1_utils.seconds_to_lap_time)
 
     # Calculate theoretical best lap
     best_laps[f"best_{session_type}_theoretical_seconds"] = (
@@ -210,7 +210,7 @@ def get_best_lap_per_driver(csv_path, session_type):
     # Create readable theoretical best lap
     best_laps[f"best_{session_type}_theoretical_lap"] = best_laps[
         f"best_{session_type}_theoretical_seconds"
-    ].apply(seconds_to_lap_time)
+    ].apply(f1_utils.seconds_to_lap_time)
 
     # Keep useful driver-level features
     best_laps = best_laps[[
