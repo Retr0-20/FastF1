@@ -1,5 +1,6 @@
 from pathlib import Path
 import config
+from f1_utils import time_to_seconds, seconds_to_lap_time, seconds_to_sector_time
 import fastf1
 import pandas as pd
 
@@ -33,7 +34,6 @@ def load_practice_session(year, event, session_type):
         print(f"Reason: {e}")
         return None
 
-
 # ---------------------------------------------------------------------
 # Paths
 # ---------------------------------------------------------------------
@@ -46,34 +46,6 @@ def practice_laps_path(year, event):
 def practice_driver_features_path(year, event):
     return PROJECT_ROOT / "data" / "processed" / \
         f"{year}_{event}_practice_driver_features.csv"
-
-
-# ---------------------------------------------------------------------
-# Time helpers
-# ---------------------------------------------------------------------
-
-def time_to_seconds(value):
-    if str(value) == "NaT":
-        return None
-
-    return round(value.total_seconds(), 3)
-
-
-def seconds_to_lap_time(seconds):
-    if seconds is None:
-        return "N/A"
-
-    minutes = int(seconds // 60)
-    remaining_seconds = seconds % 60
-
-    return f"{minutes}:{remaining_seconds:06.3f}"
-
-
-def seconds_to_sector_time(seconds):
-    if seconds is None:
-        return "N/A"
-
-    return f"{seconds:.3f}"
 
 
 # ---------------------------------------------------------------------

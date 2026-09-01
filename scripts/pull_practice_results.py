@@ -1,5 +1,6 @@
 from pathlib import Path
 import config
+from f1_utils import time_to_seconds, seconds_to_lap_time
 import fastf1
 import pandas as pd
 
@@ -20,26 +21,6 @@ EVENT_FOLDER = config.get_event_folder()
 OUTPUT_PATH = PROJECT_ROOT / f"data/processed/{EVENT_FOLDER}/{SESSION_TYPE}_fastest_laps_by_driver.csv"
 # create file if it doesn't exist if it does exist, don't freak out (FileExistsError)
 OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
-
-
-def time_to_seconds(value):
-    if str(value) == "NaT":
-        return None
-
-    # Convert a timedelta to seconds with millisecond precision 3rd decimal place
-    return round(value.total_seconds(), 3)
-
-
-def seconds_to_lap_time(seconds):
-    if seconds is None:
-        return "N/A"
-
-    # extract minutes through floor division and seconds through modulo - returning remaining seconds
-    minutes = int(seconds // 60)
-    remaining_seconds = seconds % 60
-
-    # '0' - pad with leading zeroes, '6' - total width of 6 characters, '.3f' - 3 decimal places
-    return f"{minutes}:{remaining_seconds:06.3f}"
 
 
 def pull_practice_results():

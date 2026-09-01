@@ -17,30 +17,6 @@ OUTPUT_PATH = PROJECT_ROOT / f"data/processed/{EVENT_FOLDER}/{SESSION_TYPE}_resu
 OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
 
 
-def time_to_seconds(value):
-    if str(value) == "NaT":
-        return None
-
-    return round(value.total_seconds(), 3)
-
-
-def seconds_to_lap_time(seconds):
-    if pd.isna(seconds):
-        return "N/A"
-
-    minutes = int(seconds // 60)
-    remaining_seconds = seconds % 60
-
-    return f"{minutes}:{remaining_seconds:06.3f}"
-
-
-def seconds_to_sector_time(seconds):
-    if seconds is None:
-        return "N/A"
-
-    return f"{seconds:.3f}"
-
-
 def pull_race_results():
     session = fastf1.get_session(YEAR, EVENT, SESSION_TYPE)
     session.load()
