@@ -1,5 +1,6 @@
 from pathlib import Path
 import config
+import f1_utils
 import fastf1
 import pandas as pd
 
@@ -11,7 +12,7 @@ fastf1.Cache.enable_cache(str(CACHE_DIR))
 YEAR = config.YEAR
 EVENT = config.EVENT
 SESSION_TYPE = config.SESSION_TYPE
-EVENT_FOLDER = config.get_event_folder()
+EVENT_FOLDER = f1_utils.get_event_folder()
 
 OUTPUT_PATH = PROJECT_ROOT / f"data/processed/{EVENT_FOLDER}/{SESSION_TYPE}_results.csv"
 OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)

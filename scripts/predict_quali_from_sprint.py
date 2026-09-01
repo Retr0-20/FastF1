@@ -1,13 +1,13 @@
 from pathlib import Path
 import config
-from f1_utils import time_to_seconds, seconds_to_lap_time, seconds_to_sector_time
+import f1_utils
 import fastf1
 import pandas as pd
 
 PROJECT_ROOT = config.PROJECT_ROOT
 CACHE_DIR = config.CACHE_DIR
 CACHE_DIR.mkdir(exist_ok=True)
-EVENT_FOLDER = config.get_event_folder()
+EVENT_FOLDER = f1_utils.get_event_folder()
 fastf1.Cache.enable_cache(str(CACHE_DIR))
 
 # ---------------------------------------------------------------------

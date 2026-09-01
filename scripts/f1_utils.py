@@ -1,5 +1,12 @@
 import pandas as pd
 import fastf1
+import f1_utils
+import config
+
+# ----------------------------------------------
+# Utility function for getting the folder name for the event and year
+def get_event_folder():
+    return f"{config.YEAR}_{config.EVENT.lower()}"
 
 # ----------------------------------------------
 # Utility functions for time conversions

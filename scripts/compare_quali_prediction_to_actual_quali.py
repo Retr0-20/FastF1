@@ -1,5 +1,6 @@
 from pathlib import Path
 import config
+import f1_utils
 import pandas as pd
 
 pd.set_option("display.max_rows", None)
@@ -11,7 +12,7 @@ pd.set_option("display.float_format", "{:.0f}".format)
 # ---------------------------------------------------------------------
 YEAR = config.YEAR
 EVENT = config.EVENT
-EVENT_FOLDER = config.get_event_folder()
+EVENT_FOLDER = f1_utils.get_event_folder()
 PROJECT_ROOT = config.PROJECT_ROOT
 
 # Pull and read the predicted qualifying positions and actual qualifying results CSVs

@@ -1,12 +1,13 @@
 from pathlib import Path
 import config
+import f1_utils
 import pandas as pd
 
 pd.set_option("display.max_rows", None)
 pd.set_option("display.width", 1000)
 
 PROJECT_ROOT = config.PROJECT_ROOT
-EVENT_FOLDER = config.get_event_folder()
+EVENT_FOLDER = f1_utils.get_event_folder()
 
 # Pull and read the fastest lap sector times for FP1, FP2, and FP3 from stored CSVs
 fp1 = pd.read_csv(PROJECT_ROOT / "data" / "processed" / EVENT_FOLDER / f"FP1_fastest_laps_by_driver.csv")
