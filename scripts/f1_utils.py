@@ -34,5 +34,5 @@ def seconds_to_lap_time(seconds):
 def seconds_to_sector_time(seconds):
     if seconds is None or pd.isna(seconds):
         return "N/A"
-    # '0' - pad with leading zeroes, '6' - total width of 6 characters, '.3f' - 3 decimal places
+    # '0' - pad with leading zeroes, '.3f' - 3 decimal places
     return f"{seconds:.3f}"

@@ -89,6 +89,8 @@ def pull_practice_results():
 
     # Save results to CSV
     results.to_csv(OUTPUT_PATH, index=False)
+    # create file if it doesn't exist if it does exist, don't freak out (FileExistsError)
+    OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
 
     # Print results to console for debugging purposes
     print(f"\nSaved Free Practice " f"{SESSION_TYPE}" " results to: " f"{OUTPUT_PATH}\n")
