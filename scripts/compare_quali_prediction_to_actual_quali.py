@@ -49,23 +49,43 @@ comparison["prediction_outcome"] = comparison.apply(
     axis=1
 )
 
+# Create a new column to indicate whether the predicted position is higher, lower, or the same as the actual position
+comparison["change_arrow"] = comparison.apply(
+    lambda row: f"↑{row['position_error']}" if row['predicted_quali_position'] 
+        > row['actual_quali_position'] 
+    else f"↓{row['position_error']}" if row['position_error'] > 0
+    else f"→",
+    axis=1
+)
+
+# Add the new column
+comparison = comparison.rename(columns={
+    "Driver": "Driver",
+    "Team": "Team",
+    "predicted_quali_position": "Predicted Position",
+    "actual_quali_position": "Actual Position",
+    "change_arrow": "Change Arrow",
+    "prediction_outcome": "Prediction Outcome"
+})
+
+# Add the new column
 comparison = comparison[[
     "Driver",
     "Team",
-    "predicted_quali_position",
-    "actual_quali_position",
-    "position_error",
-    "prediction_outcome"
+    "Predicted Position",
+    "Actual Position",
+    "Change Arrow",
+    "Prediction Outcome"
 ]]
 
 # Pole position is the driver with actual_quali_position == 1
-pole_position = comparison['actual_quali_position'] == 1
-# Exact matches are those where position_error == 0
-exact_matches = (comparison["position_error"] == 0).sum()
+pole_position = comparison['Actual Position'] == 1
+# Exact matches are those where change_arrow == 0
+exact_matches = (comparison["Change Arrow"] == 0).sum()
 total_drivers = len(comparison)
 # Pole driver is the driver with actual_quali_position == 1 but also derives their name
-pole_driver = comparison["Driver"][comparison["actual_quali_position"] == 1]
-comparison = comparison.sort_values("actual_quali_position")
+pole_driver = comparison["Driver"][comparison["Actual Position"] == 1]
+comparison = comparison.sort_values("Actual Position")
 
 # Print the comparison DataFrame to the console for debugging
 print("\nPrediction vs Actual Qualifying:")
