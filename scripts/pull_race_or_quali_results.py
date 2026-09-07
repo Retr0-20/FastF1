@@ -28,30 +28,6 @@ def pull_race_results():
         print(f"\nNo results found for {YEAR} {EVENT} {SESSION_TYPE}.\n")
         return
 
-    points_map = {
-        1: 25,
-        2: 18,
-        3: 15,
-        4: 12,
-        5: 10,
-        6: 8,
-        7: 6,
-        8: 4,
-        9: 2,
-        10: 1
-    }
-    
-    points_map_sprint = {
-        1: 8,
-        2: 7,
-        3: 6,
-        4: 5,
-        5: 4,
-        6: 3,
-        7: 2,
-        8: 1
-    }
-
     results = results.rename(columns={
         "Abbreviation": "Driver",
         "FullName": "Driver Name",
@@ -66,7 +42,7 @@ def pull_race_results():
             "Team"
         ]]
 
-        results['Points'] = results['Position'].map(points_map_sprint).fillna(0).astype(int)
+        results['Points'] = results['Position'].map(f1_utils.points_map_sprint).fillna(0).astype(int)
         
     elif config.SESSION_TYPE == "R":
         results = results[[
@@ -76,7 +52,7 @@ def pull_race_results():
             "Team"
         ]]
 
-        results['Points'] = results['Position'].map(points_map).fillna(0).astype(int)
+        results['Points'] = results['Position'].map(f1_utils.points_map).fillna(0).astype(int)
 
     elif config.SESSION_TYPE == "Q" or config.SESSION_TYPE == "SQ":
         results = results[[
@@ -108,9 +84,9 @@ def pull_race_results():
             })
 
         if config.SESSION_TYPE == "Q":
-            results['Potential Points'] = results['Position'].map(points_map).fillna(0).astype(int)
+            results['Potential Points'] = results['Position'].map(f1_utils.points_map).fillna(0).astype(int)
         elif config.SESSION_TYPE == "SQ":
-            results['Potential Points'] = results['Position'].map(points_map_sprint).fillna(0).astype(int)
+            results['Potential Points'] = results['Position'].map(f1_utils.points_map_sprint).fillna(0).astype(int)
 
     else:
         print(f"\nInvalid session type: {config.SESSION_TYPE}. Please use 'R' for Race, 'S' for Sprint, or 'Q' for Qualifying.\n")
