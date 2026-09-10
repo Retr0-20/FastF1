@@ -221,6 +221,8 @@ def pull_race_results():
     print(results.to_string(index=False))
 
 if __name__ == "__main__":
+    
+
     if config.SESSION_TYPE in ["R", "S"]:
         pull_race_results()
     elif config.SESSION_TYPE in ["Q", "SQ"]:
