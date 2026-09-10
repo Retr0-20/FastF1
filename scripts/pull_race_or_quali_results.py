@@ -23,11 +23,14 @@ OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
 
 def pull_practice_results():
 
-
     session = fastf1.get_session(YEAR, EVENT, SESSION_TYPE)
     session.load()
 
     laps = session.laps.copy()
+
+    if laps.empty:
+        print(f"\nNo results found for {YEAR} {EVENT} {SESSION_TYPE}.\n")
+        return
 
     laps = laps.dropna(subset=["LapTime"])
     # Filter out laps that are not accurate or have been deleted
@@ -93,7 +96,11 @@ def pull_practice_results():
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
 
     # Print results to console for debugging purposes
-    print(f"\nSaved Free Practice " f"{SESSION_TYPE}" " results to: " f"{OUTPUT_PATH}\n")
+    if not results.empty:
+        print(f"\nSaved Free Practice " f"{SESSION_TYPE}" " results to: " f"{OUTPUT_PATH}\n")
+    else:
+        print(f"\nNo results found for {YEAR} {EVENT} {SESSION_TYPE}.\n")
+
     print(results.to_string(index=False), "\n")
 
 def pull_quali_results():
@@ -101,6 +108,10 @@ def pull_quali_results():
     session.load()
 
     results = session.results.copy()
+
+    if results.empty:
+        print(f"\nNo results found for {YEAR} {EVENT} {SESSION_TYPE}.\n")
+        return
 
     results["Q1Seconds"] = results["Q1"].apply(f1_utils.time_to_seconds)
     results["Q2Seconds"] = results["Q2"].apply(f1_utils.time_to_seconds)
@@ -125,17 +136,43 @@ def pull_quali_results():
     ]]
 
     results = results.rename(columns={
-        "Abbreviation": "Driver",
-        "FullName": "DriverName",
-        "TeamName": "Team"
+    "Abbreviation": "Driver",
+    "FullName": "DriverName",
+    "TeamName": "Team"
     })
+
+    if config.SESSION_TYPE == "SQ":
+                results = results.rename(columns={
+                    "Q1": "SQ1",
+                    "Q2": "SQ2",
+                    "Q3": "SQ3",
+                    "Q1Seconds": "SQ1Seconds",
+                    "Q2Seconds": "SQ2Seconds",
+                    "Q3Seconds": "SQ3Seconds",
+                })
+
+    # If Session Type is Qualifying or Sprint Qualifying, assign points based on the respective points map
+    if config.SESSION_TYPE == "Q":
+        results['Potential Points'] = results['Position'].map(f1_utils.points_map).fillna(0).astype(int)
+    elif config.SESSION_TYPE == "SQ":
+        results['Potential Points'] = results['Position'].map(f1_utils.points_map_sprint).fillna(0).astype(int)
+    else:
+        print(f"\nInvalid session type: {config.SESSION_TYPE}. Please use 'Q' for Qualifying or 'SQ' for Sprint Qualifying.\n")
+        return
 
     results.to_csv(OUTPUT_PATH, index=False)
 
-    print(f"\nSaved Quali results to: {OUTPUT_PATH}")
+    # Print results to console and indicate where the results have been saved
+    if config.SESSION_TYPE == "SQ" and not results.empty:
+        print(f"\nSaved Sprint Qualifying results to: {OUTPUT_PATH}")
+    elif config.SESSION_TYPE == "Q" and not results.empty:
+        print(f"\nSaved Qualifying results to: {OUTPUT_PATH}")
+    else:
+        print(f"\nNo results found for {YEAR} {EVENT} {SESSION_TYPE}.\n")
+
     print(results.to_string(index=False))
 
-def pull_race_or_quali_results():
+def pull_race_results():
     session = fastf1.get_session(YEAR, EVENT, SESSION_TYPE)
     session.load()
 
@@ -153,67 +190,22 @@ def pull_race_or_quali_results():
         "TeamName": "Team",
     })
 
+    results = results[[
+                "Position",
+                "Driver",
+                "Driver Name",
+                "Team"
+            ]]
+
     # If Session Type is Sprint, assign points based on Sprint points map
     if config.SESSION_TYPE == "S":
-        results = results[[
-            "Position",
-            "Driver",
-            "Driver Name",
-            "Team"
-        ]]
-
         results['Points'] = results['Position'].map(f1_utils.points_map_sprint).fillna(0).astype(int)
-
     # If Session Type is Race, assign points based on Race points map
     elif config.SESSION_TYPE == "R":
-        results = results[[
-            "Position",
-            "Driver",
-            "Driver Name",
-            "Team"
-        ]]
-
         results['Points'] = results['Position'].map(f1_utils.points_map).fillna(0).astype(int)
-
-    # If Session Type is Qualifying or Sprint Qualifying, include Q1, Q2, Q3 times and apply time conversions functions
-    elif config.SESSION_TYPE == "Q" or config.SESSION_TYPE == "SQ":
-        results = results[[
-            "Position",
-            "Driver",
-            "Driver Name",
-            "Team",
-            "Q1",
-            "Q2",
-            "Q3",
-        ]]
-
-        results["Q1Seconds"] = results["Q1"].apply(f1_utils.time_to_seconds)
-        results["Q2Seconds"] = results["Q2"].apply(f1_utils.time_to_seconds)
-        results["Q3Seconds"] = results["Q3"].apply(f1_utils.time_to_seconds)
-        
-        results["Q1"] = results["Q1Seconds"].apply(f1_utils.seconds_to_lap_time)
-        results["Q2"] = results["Q2Seconds"].apply(f1_utils.seconds_to_lap_time)
-        results["Q3"] = results["Q3Seconds"].apply(f1_utils.seconds_to_lap_time)
-
-        if config.SESSION_TYPE == "SQ":
-            results = results.rename(columns={
-                "Q1": "SQ1",
-                "Q2": "SQ2",
-                "Q3": "SQ3",
-                "Q1Seconds": "SQ1Seconds",
-                "Q2Seconds": "SQ2Seconds",
-                "Q3Seconds": "SQ3Seconds",
-            })
-
-        # If Session Type is Qualifying or Sprint Qualifying, assign points based on the respective points map
-        if config.SESSION_TYPE == "Q":
-            results['Potential Points'] = results['Position'].map(f1_utils.points_map).fillna(0).astype(int)
-        elif config.SESSION_TYPE == "SQ":
-            results['Potential Points'] = results['Position'].map(f1_utils.points_map_sprint).fillna(0).astype(int)
-
     # If Session Type is not recognized, print an error message and return
     else:
-        print(f"\nInvalid session type: {config.SESSION_TYPE}. Please use 'R' for Race, 'S' for Sprint, or 'Q' for Qualifying.\n")
+        print(f"\nInvalid session type: {config.SESSION_TYPE}. Please use 'R' for Race, 'S' for Sprint.\n")
         return
 
     results.to_csv(OUTPUT_PATH, index=False)
@@ -223,17 +215,17 @@ def pull_race_or_quali_results():
         print(f"\nSaved Sprint results to: {OUTPUT_PATH}")
     elif config.SESSION_TYPE == "R" and not results.empty:
         print(f"\nSaved Race results to: {OUTPUT_PATH}")
-    elif config.SESSION_TYPE == "Q" and not results.empty:
-        print(f"\nSaved Qualifying results to: {OUTPUT_PATH}")
-    elif config.SESSION_TYPE == "SQ" and not results.empty:
-        print(f"\nSaved Sprint Qualifying results to: {OUTPUT_PATH}")
     else:
         print(f"\nNo results found for {YEAR} {EVENT} {SESSION_TYPE}.\n")
 
     print(results.to_string(index=False))
 
 if __name__ == "__main__":
-    if config.SESSION_TYPE in ["R", "S", "Q", "SQ"]:
-        pull_race_or_quali_results
-    else:
+    if config.SESSION_TYPE in ["R", "S"]:
+        pull_race_results()
+    elif config.SESSION_TYPE in ["Q", "SQ"]:
+        pull_quali_results()
+    elif config.SESSION_TYPE in ["FP1", "FP2", "FP3"]:
         pull_practice_results()
+    else:
+        print(f"\nInvalid session type: {config.SESSION_TYPE}. Please use 'FP1', 'FP2', 'FP3', 'Q', 'SQ', 'R', or 'S'.\n")
