@@ -17,11 +17,123 @@ EVENT = config.EVENT
 SESSION_TYPE = config.SESSION_TYPE
 EVENT_FOLDER = f1_utils.get_event_folder()
 
-
 OUTPUT_PATH = PROJECT_ROOT / f"data/processed/{EVENT_FOLDER}/{SESSION_TYPE}_results.csv"
 # create file if it doesn't exist if it does exist, don't freak out (FileExistsError)
 OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
 
+def pull_practice_results():
+
+
+    session = fastf1.get_session(YEAR, EVENT, SESSION_TYPE)
+    session.load()
+
+    laps = session.laps.copy()
+
+    laps = laps.dropna(subset=["LapTime"])
+    # Filter out laps that are not accurate or have been deleted
+    laps = laps[
+        (laps["IsAccurate"] == True) &
+        (laps["Deleted"] == False)
+    ]
+
+    # Convert LapTime to seconds for easier comparison and sorting
+    laps["LapTimeSeconds"] = laps["LapTime"].apply(f1_utils.time_to_seconds)
+
+    # Fastest valid lap per driver
+    results = (
+        laps.sort_values("LapTimeSeconds")
+        .groupby(["Driver", "Team"])
+        .first()
+        .reset_index()
+    )
+
+    # Convert best lap time to seconds for easier comparison and sorting
+    results["BestLap"] = results["LapTimeSeconds"].apply(f1_utils.seconds_to_lap_time)
+
+    # Select relevant columns and sort by lap time
+    results = results[[
+        "Driver",
+        "Team",
+        "BestLap",
+        "LapTimeSeconds",
+        "Compound",
+        "TyreLife",
+        "TrackStatus",
+        "Sector1Time",
+        "Sector2Time",
+        "Sector3Time"
+    ]]
+
+    # Sort by lap time and assign position
+    results = results.sort_values("LapTimeSeconds").reset_index(drop=True)
+    results["Position"] = range(1, len(results) + 1)
+    # Convert sector times to seconds for easier comparison and sorting
+    results["Sector1Time"] = results["Sector1Time"].apply(f1_utils.time_to_seconds)
+    results["Sector2Time"] = results["Sector2Time"].apply(f1_utils.time_to_seconds)
+    results["Sector3Time"] = results["Sector3Time"].apply(f1_utils.time_to_seconds)
+
+    # Append position to DataFrame
+    results = results[[
+        "Position",
+        "Driver",
+        "Team",
+        "BestLap",
+        "LapTimeSeconds",
+        "Compound",
+        "TyreLife",
+        "TrackStatus",
+        "Sector1Time",
+        "Sector2Time",
+        "Sector3Time"
+    ]]
+
+    # Save results to CSV
+    results.to_csv(OUTPUT_PATH, index=False)
+    # create file if it doesn't exist if it does exist, don't freak out (FileExistsError)
+    OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
+
+    # Print results to console for debugging purposes
+    print(f"\nSaved Free Practice " f"{SESSION_TYPE}" " results to: " f"{OUTPUT_PATH}\n")
+    print(results.to_string(index=False), "\n")
+
+def pull_quali_results():
+    session = fastf1.get_session(YEAR, EVENT, SESSION_TYPE)
+    session.load()
+
+    results = session.results.copy()
+
+    results["Q1Seconds"] = results["Q1"].apply(f1_utils.time_to_seconds)
+    results["Q2Seconds"] = results["Q2"].apply(f1_utils.time_to_seconds)
+    results["Q3Seconds"] = results["Q3"].apply(f1_utils.time_to_seconds)
+
+    results["Q1"] = results["Q1Seconds"].apply(f1_utils.seconds_to_lap_time)
+    results["Q2"] = results["Q2Seconds"].apply(f1_utils.seconds_to_lap_time)
+    results["Q3"] = results["Q3Seconds"].apply(f1_utils.seconds_to_lap_time)
+
+    results = results[[
+        "Position",
+        "Abbreviation",
+        "FullName",
+        "TeamName",
+        "Q1",
+        "Q1Seconds",
+        "Q2",
+        "Q2Seconds",
+        "Q3",
+        "Q3Seconds",
+        "Status"
+    ]]
+
+    results = results.rename(columns={
+        "Abbreviation": "Driver",
+        "FullName": "DriverName",
+        "TeamName": "Team"
+    })
+
+    results.to_csv(OUTPUT_PATH, index=False)
+
+    print(f"\nSaved Quali results to: {OUTPUT_PATH}")
+    print(results.to_string(index=False))
 
 def pull_race_or_quali_results():
     session = fastf1.get_session(YEAR, EVENT, SESSION_TYPE)
@@ -120,4 +232,8 @@ def pull_race_or_quali_results():
 
     print(results.to_string(index=False))
 
-pull_race_or_quali_results()
+if __name__ == "__main__":
+    if config.SESSION_TYPE in ["R", "S", "Q", "SQ"]:
+        pull_race_or_quali_results
+    else:
+        pull_practice_results()
