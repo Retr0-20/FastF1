@@ -1,0 +1,23 @@
+Position,Driver,DriverName,Team,Q1,Q1Seconds,Q2,Q2Seconds,Q3,Q3Seconds,Status,Potential Points
+1.0,NOR,Lando Norris,McLaren,1:33.469,93.469,1:32.873,92.873,1:31.824,91.824,,25
+2.0,ANT,Kimi Antonelli,Mercedes,1:33.267,93.267,1:32.591,92.591,1:31.835,91.835,,18
+3.0,VER,Max Verstappen,Red Bull Racing,1:33.381,93.381,1:32.431,92.431,1:31.964,91.964,,15
+4.0,HAM,Lewis Hamilton,Ferrari,1:33.531,93.531,1:32.710,92.71,1:32.013,92.013,,12
+5.0,LEC,Charles Leclerc,Ferrari,1:33.532,93.532,1:32.755,92.755,1:32.019,92.019,,10
+6.0,RUS,George Russell,Mercedes,1:33.211,93.211,1:32.850,92.85,1:32.149,92.149,,8
+7.0,PIA,Oscar Piastri,McLaren,1:33.829,93.829,1:33.204,93.204,1:32.294,92.294,,6
+8.0,LAW,Liam Lawson,Red Bull Racing,1:33.310,93.31,1:32.780,92.78,1:32.316,92.316,,4
+9.0,COL,Franco Colapinto,Alpine,1:33.963,93.963,1:33.038,93.038,1:32.903,92.903,,2
+10.0,LIN,Arvid Lindblad,Racing Bulls,1:34.340,94.34,1:33.204,93.204,1:33.041,93.041,,1
+11.0,HUL,Nico Hulkenberg,Audi,1:34.417,94.417,1:33.223,93.223,N/A,,,0
+12.0,BOR,Gabriel Bortoleto,Audi,1:33.986,93.986,1:33.388,93.388,N/A,,,0
+13.0,OCO,Esteban Ocon,Haas F1 Team,1:34.667,94.667,1:33.667,93.667,N/A,,,0
+14.0,GAS,Pierre Gasly,Alpine,1:34.246,94.246,1:33.753,93.753,N/A,,,0
+15.0,TSU,Yuki Tsunoda,Racing Bulls,1:34.311,94.311,1:34.084,94.084,N/A,,,0
+16.0,ALB,Alexander Albon,Williams,1:35.307,95.307,1:35.532,95.532,N/A,,,0
+17.0,SAI,Carlos Sainz,Williams,1:35.312,95.312,N/A,,N/A,,,0
+18.0,ALO,Fernando Alonso,Aston Martin,1:35.388,95.388,N/A,,N/A,,,0
+19.0,PER,Sergio Perez,Cadillac,1:35.913,95.913,N/A,,N/A,,,0
+20.0,BOT,Valtteri Bottas,Cadillac,1:38.011,98.011,N/A,,N/A,,,0
+,STR,Lance Stroll,Aston Martin,N/A,,N/A,,N/A,,,0
+,BEA,Oliver Bearman,Haas F1 Team,N/A,,N/A,,N/A,,,0
