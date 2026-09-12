@@ -38,8 +38,8 @@ comparison["position_error"] = (
 ).abs()
 
 comparison["predicted_quali_position"] = comparison["predicted_quali_position"].astype(int)
-comparison["actual_quali_position"] = comparison["actual_quali_position"].astype(int)
-comparison["position_error"] = comparison["position_error"].astype(int)
+comparison["actual_quali_position"] = comparison["actual_quali_position"]
+comparison["position_error"] = comparison["position_error"]
 
 # Add a new column to indicate whether the predicted position is higher, lower, or the same as the actual position
 comparison["prediction_outcome"] = comparison.apply(
@@ -80,8 +80,8 @@ comparison = comparison[[
 
 # Pole position is the driver with actual_quali_position == 1
 pole_position = comparison['Actual Position'] == 1
-# Exact matches are those where change_arrow == 0
-exact_matches = (comparison["Change Arrow"] == 0).sum()
+# Exact matches are those where predicted position equals actual position
+exact_matches = (comparison["Prediction Outcome"] == "Spot On").sum()
 total_drivers = len(comparison)
 # Pole driver is the driver with actual_quali_position == 1 but also derives their name
 pole_driver = comparison["Driver"][comparison["Actual Position"] == 1]
