@@ -33,6 +33,13 @@ comparison = comparison.rename(columns={
     "Position_x": "race_position"
 })
 
+# Drop any missing drivers and warn the user about it
+missing_drivers = comparison[comparison["quali_position"].isna()]
+if len(missing_drivers) > 0:
+    print(f"Warning: The following drivers are missing qualifying positions and will be dropped from the comparison: "
+          + f"\n{missing_drivers[['Driver', 'race_position']]}\n")
+    comparison = comparison.dropna(subset=["quali_position"])
+
 # Add a new column to calculate the absolute difference between race and qualifying positions
 comparison["position_diff"] = (
     comparison["race_position"] - comparison["quali_position"]

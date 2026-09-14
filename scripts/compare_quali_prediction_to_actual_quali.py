@@ -32,14 +32,21 @@ comparison = comparison.rename(columns={
     "Position": "actual_quali_position"
 })
 
+# After merge/rename, before astype(int):
+missing = comparison[comparison["actual_quali_position"].isna()]
+if len(missing) > 0:
+    print("Drivers with no qualifying result (excluded from comparison):")
+    print(missing["Driver"].tolist())
+    comparison = comparison.dropna(subset=["actual_quali_position"])
+
 # Add a new column to calculate the absolute difference between predicted and actual qualifying positions
 comparison["position_error"] = (
     comparison["predicted_quali_position"] - comparison["actual_quali_position"]
 ).abs()
 
 comparison["predicted_quali_position"] = comparison["predicted_quali_position"].astype(int)
-comparison["actual_quali_position"] = comparison["actual_quali_position"]
-comparison["position_error"] = comparison["position_error"]
+comparison["actual_quali_position"] = comparison["actual_quali_position"].astype(int)
+comparison["position_error"] = comparison["position_error"].astype(int)
 
 # Add a new column to indicate whether the predicted position is higher, lower, or the same as the actual position
 comparison["prediction_outcome"] = comparison.apply(
