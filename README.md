@@ -15,9 +15,9 @@ From here you can run any script by entering `python3 SCRIPT_NAME.py` in the ter
 ## Typical workflow
 
 1. Set `YEAR`, `EVENT`, and `SESSION_TYPE` in `config.py`
-2. Pull practice results → run a prediction script
-3. After qualifying: `SESSION_TYPE = "Q"` and `pull_quali_results.py`
-4. After the race: `SESSION_TYPE = "R"` and `pull_race_results.py`
+2. Pull_session_results `SESSION_TYPE = "FP1/2/3"` → run a prediction script
+3. After qualifying: `SESSION_TYPE = "Q"` and `Pull_session_results.py`
+4. After the race: `SESSION_TYPE = "R"` and `Pull_session_results.py`
 5. Run the comparison scripts to score your predictions
 
 ## Setup
@@ -74,19 +74,18 @@ This script contains 4 functions with appropriate names:
 
 These scripts are used for 3 main purposes, indicated by their names:
 
-`pull_practice_results.py`
+`pull_session_results.py`
+    `SESSION_TYPE = "FP1/2/3"`
     This script pulls data such as: Position, Driver, Team, BestLap,
     LapTimeSeconds, Compound, TyreLife,
     TrackStatus, Sector1Time, Sector2Time
     and Sector3Time.
     Allows all 3 Free Practice (FP) sessions to be configured in config.py.
-
-`pull_quali_results.py`
+    `SESSION_TYPE = "Q"`
     This script pulls data such as: Position, Driver, DriverName, Team, Q1, Q1Seconds,
     Q2, Q2Seconds, Q3, Q3Seconds, Status.
     Allows both race qualifying and sprint qualifying formats to be configured in config.py.
-
-`pull_race_results.py`
+    `SESSION_TYPE = "R"`
     This script pulls data such as: Position, Driver, Team and Points.
     Allows both race and sprint formats to be configured in config.py.
 
