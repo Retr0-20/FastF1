@@ -166,7 +166,7 @@ def pull_quali_results():
     if config.SESSION_TYPE == "SQ" and not results.empty:
         print(f"\nSaved Sprint Qualifying results to: {OUTPUT_PATH}")
     elif config.SESSION_TYPE == "Q" and not results.empty:
-        print(f"\nSaved Qualifying results to: {OUTPUT_PATH}")
+        print(f"\nSaved Qualifying results to: {OUTPUT_PATH}\n")
     else:
         print(f"\nNo results found for {YEAR} {EVENT} {SESSION_TYPE}.\n")
 
@@ -212,9 +212,9 @@ def pull_race_results():
 
     # Print results to console and indicate where the results have been saved
     if config.SESSION_TYPE == "S" and not results.empty:
-        print(f"\nSaved Sprint results to: {OUTPUT_PATH}")
+        print(f"\nSaved Sprint results to: {OUTPUT_PATH}\n")
     elif config.SESSION_TYPE == "R" and not results.empty:
-        print(f"\nSaved Race results to: {OUTPUT_PATH}")
+        print(f"\nSaved Race results to: {OUTPUT_PATH}\n")
     else:
         print(f"\nNo results found for {YEAR} {EVENT} {SESSION_TYPE}.\n")
 
@@ -222,7 +222,6 @@ def pull_race_results():
 
 if __name__ == "__main__":
     
-
     if config.SESSION_TYPE in ["R", "S"]:
         pull_race_results()
     elif config.SESSION_TYPE in ["Q", "SQ"]:
