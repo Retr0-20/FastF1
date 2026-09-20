@@ -4,7 +4,42 @@ import f1_utils
 import config
 
 # ----------------------------------------------
+# Utility function for getting the lap data (laps, results, etc.) for the specified year, event, and session type
+# Used for practice sessions (FP1, FP2, FP3) and qualifying sessions (Q, SQ)
+
+def get_laps_data():
+    session = fastf1.get_session(config.YEAR, config.EVENT, config.SESSION_TYPE)
+    session.load()
+
+    laps = session.laps.copy()
+
+    # If laps are empty, print a message and return
+    if laps.empty:
+        print(f"\nNo laps found for {config.YEAR} {config.EVENT} {config.SESSION_TYPE}.\n")
+        return
+
+    return laps
+
+# ----------------------------------------------
+# Utility function for getting the session results for the specified year, event, and session type
+# Used for qualifying sessions (Q, SQ) and race sessions (R, S)
+
+def get_session_data():
+    session = fastf1.get_session(config.YEAR, config.EVENT, config.SESSION_TYPE)
+    session.load()
+
+    results = session.results.copy()
+
+    # If results are empty, print a message and return
+    if results.empty:
+        print(f"\nNo results found for {config.YEAR} {config.EVENT} {config.SESSION_TYPE}.\n")
+        return
+
+    return results
+
+# ----------------------------------------------
 # Utility function for getting the folder name for the event and year
+
 def get_event_folder():
     return f"{config.YEAR}_{config.EVENT.lower()}"
 

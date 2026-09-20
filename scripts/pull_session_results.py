@@ -23,14 +23,10 @@ OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
 
 def pull_practice_results():
 
-    session = fastf1.get_session(YEAR, EVENT, SESSION_TYPE)
-    session.load()
+    laps = f1_utils.get_laps_data()
 
-    laps = session.laps.copy()
-
-    if laps.empty:
-        print(f"\nNo results found for {YEAR} {EVENT} {SESSION_TYPE}.\n")
-        return
+    print(f"Laps found: {len(laps)}")
+    print(f"Columns: {laps.columns.tolist()}")
 
     laps = laps.dropna(subset=["LapTime"])
     # Filter out laps that are not accurate or have been deleted
@@ -104,14 +100,7 @@ def pull_practice_results():
     print(results.to_string(index=False), "\n")
 
 def pull_quali_results():
-    session = fastf1.get_session(YEAR, EVENT, SESSION_TYPE)
-    session.load()
-
-    results = session.results.copy()
-
-    if results.empty:
-        print(f"\nNo results found for {YEAR} {EVENT} {SESSION_TYPE}.\n")
-        return
+    results = f1_utils.get_session_data()
 
     results["Q1Seconds"] = results["Q1"].apply(f1_utils.time_to_seconds)
     results["Q2Seconds"] = results["Q2"].apply(f1_utils.time_to_seconds)
@@ -173,15 +162,7 @@ def pull_quali_results():
     print(results.to_string(index=False))
 
 def pull_race_results():
-    session = fastf1.get_session(YEAR, EVENT, SESSION_TYPE)
-    session.load()
-
-    results = session.results.copy()
-
-    # If results are empty, print a message and return
-    if results.empty:
-        print(f"\nNo results found for {YEAR} {EVENT} {SESSION_TYPE}.\n")
-        return
+    results = f1_utils.get_session_data()
 
     # Amend DataFrame column names across all session types for consistency
     results = results.rename(columns={
