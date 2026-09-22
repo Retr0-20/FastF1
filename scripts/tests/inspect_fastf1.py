@@ -1,6 +1,8 @@
 from pathlib import Path
 import fastf1
 
+from scripts import f1_utils
+
 CACHE_DIR = Path("fastf1_cache")
 CACHE_DIR.mkdir(exist_ok=True)
 fastf1.Cache.enable_cache(str(CACHE_DIR))
@@ -104,7 +106,7 @@ def inspect_session(year, event, session_type):
 
     print_results_summary(session.results)
     print_fastest_laps(session.laps)
-    print_weather_summary(session.weather_data)
+    f1_utils.print_weather_summary(session.weather_data)
 
     print("\n\n\n")
 

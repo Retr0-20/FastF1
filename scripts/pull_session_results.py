@@ -202,6 +202,8 @@ def pull_race_results():
     print(results.to_string(index=False))
 
 if __name__ == "__main__":
+
+    weather = f1_utils.get_weather_data()
     
     if config.SESSION_TYPE in ["R", "S"]:
         pull_race_results()
@@ -211,3 +213,11 @@ if __name__ == "__main__":
         pull_practice_results()
     else:
         print(f"\nInvalid session type: {config.SESSION_TYPE}. Please use 'FP1', 'FP2', 'FP3', 'Q', 'SQ', 'R', or 'S'.\n")
+
+    if weather is not None and not weather.empty:
+        summary = f1_utils.get_weather_summary(weather)
+        print(f"\nWeather summary for {config.YEAR} {config.EVENT} {config.SESSION_TYPE}:")
+        print(f"Starting air temp:   {summary['Starting Air Temp']}°C")
+        print(f"Ending air temp:     {summary['Ending Air Temp']}°C")
+        print(f"Starting track temp: {summary['Starting Track Temp']}°C")
+        print(f"Ending track temp:   {summary['Ending Track Temp']}°C")

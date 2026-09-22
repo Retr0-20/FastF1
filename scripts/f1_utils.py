@@ -43,6 +43,30 @@ def get_session_data():
 def get_event_folder():
     return f"{config.YEAR}_{config.EVENT.lower()}"
 
+
+# ----------------------------------------------
+# Utility function for printing a weather summary for the specified year, event, and session type
+def get_weather_data():
+    session = fastf1.get_session(config.YEAR, config.EVENT, config.SESSION_TYPE)
+    session.load()
+    return session.weather_data
+
+# ----------------------------------------------
+# Utility function for printing a weather summary for the specified year, event, and session type
+def get_weather_summary(weather):
+    first = weather.iloc[0]
+    last = weather.iloc[-1]
+
+    return {
+        "Starting Air Temp": first['AirTemp'],
+        "Ending Air Temp": last['AirTemp'],
+        "Starting Track Temp": first['TrackTemp'],
+        "Ending Track Temp": last['TrackTemp'],
+        "Starting Humidity": first['Humidity'],
+        "Ending Humidity": last['Humidity'],
+        "Rainfall Recorded": weather['Rainfall'].any()
+    }
+
 # ----------------------------------------------
 # Utility functions for time conversions
 
