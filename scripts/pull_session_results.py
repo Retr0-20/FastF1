@@ -219,6 +219,8 @@ if __name__ == "__main__":
         print(f"\nThe time of day summary for {config.YEAR} {config.EVENT} {config.SESSION_TYPE}:")
         print(f"Starting time: {session_times['Starting Hour']}")
         print(f"Ending time:   {session_times['Ending Hour']}")
+        local_start = f1_utils.get_local_session_start()
+        print(f"Session commenced: {local_start.strftime('%H:%M %Z')} local time")  # %Z shows timezone name/abbrev
         summary = f1_utils.get_weather_summary(weather)
         print(f"\nWeather summary for {config.YEAR} {config.EVENT} {config.SESSION_TYPE}:")
         print(f"Starting air temp:   {summary['Starting Air Temp']}°C")

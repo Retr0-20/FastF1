@@ -93,6 +93,10 @@ def get_time_of_day_summary(weather):
         "Ending Hour": f"{end_hour:02d}:{end_minute:02d}"
     }
 
+def get_local_session_start():
+    session = fastf1.get_session(config.YEAR, config.EVENT, config.SESSION_TYPE)
+    return session.date
+
 
 # ----------------------------------------------
 # Utility functions for time conversions
