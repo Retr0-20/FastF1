@@ -1,4 +1,5 @@
 from pathlib import Path
+from datetime import timedelta
 import config
 import f1_utils
 import fastf1
@@ -205,6 +206,7 @@ if __name__ == "__main__":
 
     weather = f1_utils.get_weather_data()
     session_times = f1_utils.get_time_of_day_summary(weather)
+    local_start = f1_utils.get_local_session_start()
     
     if config.SESSION_TYPE in ["R", "S"]:
         pull_race_results()
@@ -216,14 +218,21 @@ if __name__ == "__main__":
         print(f"\nInvalid session type: {config.SESSION_TYPE}. Please use 'FP1', 'FP2', 'FP3', 'Q', 'SQ', 'R', or 'S'.\n")
 
     if weather is not None and not weather.empty:
-        print(f"\nThe time of day summary for {config.YEAR} {config.EVENT} {config.SESSION_TYPE}:")
-        print(f"Starting time: {session_times['Starting Hour']}")
-        print(f"Ending time:   {session_times['Ending Hour']}")
+        # Time-of-day / duration data
+        times = f1_utils.get_time_of_day_summary(weather)
+
+        # Wall-clock end = scheduled start + data duration
         local_start = f1_utils.get_local_session_start()
-        print(f"Session commenced: {local_start.strftime('%H:%M %Z')} local time")  # %Z shows timezone name/abbrev
-        summary = f1_utils.get_weather_summary(weather)
+        local_end = local_start + timedelta(seconds=times["end_seconds"])
+        print(f"Session commenced: {local_start.strftime('%H:%M %Z')}")
+        print(f"Session ended:     {local_end.strftime('%H:%M %Z')}")
+        print(f"Duration:          {times['Ending Hour']}")   # or local_end - local_start
+
+        # Weather summary — ITS OWN name
+        weather_summary = f1_utils.get_weather_summary(weather)
+
         print(f"\nWeather summary for {config.YEAR} {config.EVENT} {config.SESSION_TYPE}:")
-        print(f"Starting air temp:   {summary['Starting Air Temp']}°C")
-        print(f"Ending air temp:     {summary['Ending Air Temp']}°C")
-        print(f"Starting track temp: {summary['Starting Track Temp']}°C")
-        print(f"Ending track temp:   {summary['Ending Track Temp']}°C")
+        print(f"Starting air temp: {weather_summary['Starting Air Temp']}°C")
+        print(f"Ending air temp: {weather_summary['Ending Air Temp']}°C")
+        print(f"Starting track temp: {weather_summary['Starting Track Temp']}°C")
+        print(f"Ending track temp: {weather_summary['Ending Track Temp']}°C")

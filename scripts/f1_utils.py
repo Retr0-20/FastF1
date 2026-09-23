@@ -69,30 +69,27 @@ def get_weather_summary(weather):
 
 # ----------------------------------------------
 # Utility function for getting the session times for the specified year, event, and session type
-# f1_utils.py — replace get_time_of_day_summary():
 def get_time_of_day_summary(weather):
     if weather is None or weather.empty:
         return None
 
-    # Time column is Timedelta from session start, not absolute datetime
-    start_td = weather["Time"].iloc[0]      # Timedelta
-    end_td = weather["Time"].iloc[-1]       # Timedelta
+    start_td = weather["Time"].iloc[0]
+    end_td = weather["Time"].iloc[-1]
 
-    # Extract hours/minutes from Timedelta
     start_seconds = int(start_td.total_seconds())
     end_seconds = int(end_td.total_seconds())
 
-    # Convert to HH:MM
-    start_hour = start_seconds // 3600
-    start_minute = (start_seconds % 3600) // 60
-    end_hour = end_seconds // 3600
-    end_minute = (end_seconds % 3600) // 60
-
+    # ADD these two raw values to the dict:
     return {
-        "Starting Hour": f"{start_hour:02d}:{start_minute:02d}",
-        "Ending Hour": f"{end_hour:02d}:{end_minute:02d}"
+        "Starting Hour": f"{start_seconds // 3600:02d}:{(start_seconds % 3600) // 60:02d}",
+        "Ending Hour": f"{end_seconds // 3600:02d}:{(end_seconds % 3600) // 60:02d}",
+        "start_seconds": start_seconds,     # ← new
+        "end_seconds": end_seconds          # ← new
     }
 
+
+# ----------------------------------------------
+# Utility function for getting the session start for the specified year, event, and session type
 def get_local_session_start():
     session = fastf1.get_session(config.YEAR, config.EVENT, config.SESSION_TYPE)
     return session.date
