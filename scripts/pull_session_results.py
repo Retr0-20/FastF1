@@ -236,3 +236,4 @@ if __name__ == "__main__":
         print(f"Ending air temp: {weather_summary['Ending Air Temp']}°C")
         print(f"Starting track temp: {weather_summary['Starting Track Temp']}°C")
         print(f"Ending track temp: {weather_summary['Ending Track Temp']}°C")
+        pri
