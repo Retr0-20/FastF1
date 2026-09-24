@@ -231,11 +231,11 @@ if __name__ == "__main__":
         # Weather summary — ITS OWN name
         weather_summary = f1_utils.get_weather_summary(weather)
 
-        print(f"\nWeather summary for {config.YEAR} {config.EVENT} {config.SESSION_TYPE}:")
+        print(f"\nWeather summary for {config.YEAR} {config.EVENT} {config.SESSION_TYPE}:\n")
         print(f"Starting air temp: {weather_summary['Starting Air Temp']}°C")
         print(f"Ending air temp: {weather_summary['Ending Air Temp']}°C")
         print(f"Starting track temp: {weather_summary['Starting Track Temp']}°C")
         print(f"Ending track temp: {weather_summary['Ending Track Temp']}°C")
         print(f"Starting Humidity: {weather_summary['Starting Humidity']}%")
         print(f"Ending Humidity:   {weather_summary['Ending Humidity']}%")
-        print(f"Rainfall Recorded: {weather_summary['Rainfall Recorded']}")
+        print(f"Rainfall Recorded: {weather_summary['Rainfall Recorded']}\n")
