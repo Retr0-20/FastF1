@@ -224,6 +224,7 @@ if __name__ == "__main__":
         # Wall-clock end = scheduled start + data duration
         local_start = f1_utils.get_local_session_start()
         local_end = local_start + timedelta(seconds=times["end_seconds"])
+        print(f"Timing summary (local time) for {config.YEAR} {config.EVENT} {config.SESSION_TYPE}:\n")
         print(f"Session commenced: {local_start.strftime('%H:%M %Z')}")
         print(f"Session ended:     {local_end.strftime('%H:%M %Z')}")
         print(f"Duration:          {times['Ending Hour']}")   # or local_end - local_start
