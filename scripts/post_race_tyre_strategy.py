@@ -1,10 +1,17 @@
 from matplotlib import pyplot as plt
 import fastf1
 from fastf1 import plotting
+import config
+import f1_utils
+
+YEAR = config.YEAR
+EVENT = config.EVENT
+SESSION_TYPE = config.SESSION_TYPE
+EVENT_FOLDER = f1_utils.get_event_folder()
 
 plotting.setup_mpl(color_scheme='fastf1')
 
-session = fastf1.get_session(2026, "Netherlands", 'R')
+session = fastf1.get_session(YEAR, EVENT, SESSION_TYPE)
 session.load()
 laps = session.laps
 
@@ -38,7 +45,7 @@ for driver in drivers:
         )
         previous_stint_end += row["StintLength"]
 
-plt.title("2026 Netherlands GP - Tire Strategies")
+plt.title(f"{YEAR} {EVENT} - Tire Strategies")
 plt.xlabel("Lap Number")
 plt.grid(False)
 ax.invert_yaxis()
