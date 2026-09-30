@@ -96,7 +96,11 @@ def pull_practice_results():
     else:
         print(f"\nNo results found for {YEAR} {EVENT} {SESSION_TYPE}.\n")
 
-    print(results.to_string(index=False), "\n")
+    print("\n\n\n\n" + "=" * 60)
+    print(f"{YEAR} {EVENT} — {SESSION_TYPE}")
+    print("=" * 60)
+    print(results.to_string(index=False))
+    print("\n" + "=" * 60)
 
 def pull_quali_results():
     results = f1_utils.get_session_data()
@@ -158,7 +162,11 @@ def pull_quali_results():
     else:
         print(f"\nNo results found for {YEAR} {EVENT} {SESSION_TYPE}.\n")
 
+    print("\n\n\n\n" + "=" * 60)
+    print(f"{YEAR} {EVENT} — {SESSION_TYPE}")
+    print("=" * 60)
     print(results.to_string(index=False))
+    print("\n" + "=" * 60)
 
 def pull_race_results():
     results = f1_utils.get_session_data()
@@ -198,7 +206,11 @@ def pull_race_results():
     else:
         print(f"\nNo results found for {YEAR} {EVENT} {SESSION_TYPE}.\n")
 
+    print("\n\n\n\n" + "=" * 60)
+    print(f"{YEAR} {EVENT} — {SESSION_TYPE}")
+    print("=" * 60)
     print(results.to_string(index=False))
+    print("\n" + "=" * 60)
 
 if __name__ == "__main__":
 
@@ -215,6 +227,7 @@ if __name__ == "__main__":
         print(f"\nInvalid session type: {SESSION_TYPE}. Please use 'FP1', 'FP2', 'FP3', 'Q', 'SQ', 'R', or 'S'.\n")
 
     if weather is not None and not weather.empty:
+        print("\n" + "=" * 60)
         # Time-of-day / duration data
         times = f1_utils.get_time_of_day_summary(weather)
 
@@ -228,7 +241,7 @@ if __name__ == "__main__":
 
         # Weather summary — ITS OWN name
         weather_summary = f1_utils.get_weather_summary(weather)
-
+        print("\n" + "=" * 60)
         print(f"\nWeather summary for {YEAR} {EVENT} {SESSION_TYPE}:\n")
         print(f"Starting air temp: {weather_summary['Starting Air Temp']}°C")
         print(f"Ending air temp: {weather_summary['Ending Air Temp']}°C")
@@ -237,3 +250,4 @@ if __name__ == "__main__":
         print(f"Starting Humidity: {weather_summary['Starting Humidity']}%")
         print(f"Ending Humidity:   {weather_summary['Ending Humidity']}%")
         print(f"Rainfall Recorded: {weather_summary['Rainfall Recorded']}\n")
+        print("=" * 60 + "\n\n\n\n")
