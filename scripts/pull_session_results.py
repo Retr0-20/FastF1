@@ -89,8 +89,6 @@ def pull_practice_results():
 
     # Save results to CSV
     results.to_csv(OUTPUT_PATH, index=False)
-    # create file if it doesn't exist if it does exist, don't freak out (FileExistsError)
-    OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
 
     # Print results to console for debugging purposes
     if not results.empty:
@@ -205,7 +203,6 @@ def pull_race_results():
 if __name__ == "__main__":
 
     weather = f1_utils.get_weather_data()
-    session_times = f1_utils.get_time_of_day_summary(weather)
     local_start = f1_utils.get_local_session_start()
     
     if SESSION_TYPE in ["R", "S"]:
