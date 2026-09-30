@@ -131,7 +131,7 @@ def pull_quali_results():
     "TeamName": "Team"
     })
 
-    if config.SESSION_TYPE == "SQ":
+    if SESSION_TYPE == "SQ":
                 results = results.rename(columns={
                     "Q1": "SQ1",
                     "Q2": "SQ2",
@@ -142,20 +142,20 @@ def pull_quali_results():
                 })
 
     # If Session Type is Qualifying or Sprint Qualifying, assign points based on the respective points map
-    if config.SESSION_TYPE == "Q":
+    if SESSION_TYPE == "Q":
         results['Potential Points'] = results['Position'].map(f1_utils.points_map).fillna(0).astype(int)
-    elif config.SESSION_TYPE == "SQ":
+    elif SESSION_TYPE == "SQ":
         results['Potential Points'] = results['Position'].map(f1_utils.points_map_sprint).fillna(0).astype(int)
     else:
-        print(f"\nInvalid session type: {config.SESSION_TYPE}. Please use 'Q' for Qualifying or 'SQ' for Sprint Qualifying.\n")
+        print(f"\nInvalid session type: {SESSION_TYPE}. Please use 'Q' for Qualifying or 'SQ' for Sprint Qualifying.\n")
         return
 
     results.to_csv(OUTPUT_PATH, index=False)
 
     # Print results to console and indicate where the results have been saved
-    if config.SESSION_TYPE == "SQ" and not results.empty:
+    if SESSION_TYPE == "SQ" and not results.empty:
         print(f"\nSaved Sprint Qualifying results to: {OUTPUT_PATH}")
-    elif config.SESSION_TYPE == "Q" and not results.empty:
+    elif SESSION_TYPE == "Q" and not results.empty:
         print(f"\nSaved Qualifying results to: {OUTPUT_PATH}\n")
     else:
         print(f"\nNo results found for {YEAR} {EVENT} {SESSION_TYPE}.\n")
@@ -180,22 +180,22 @@ def pull_race_results():
             ]]
 
     # If Session Type is Sprint, assign points based on Sprint points map
-    if config.SESSION_TYPE == "S":
+    if SESSION_TYPE == "S":
         results['Points'] = results['Position'].map(f1_utils.points_map_sprint).fillna(0).astype(int)
     # If Session Type is Race, assign points based on Race points map
-    elif config.SESSION_TYPE == "R":
+    elif SESSION_TYPE == "R":
         results['Points'] = results['Position'].map(f1_utils.points_map).fillna(0).astype(int)
     # If Session Type is not recognized, print an error message and return
     else:
-        print(f"\nInvalid session type: {config.SESSION_TYPE}. Please use 'R' for Race, 'S' for Sprint.\n")
+        print(f"\nInvalid session type: {SESSION_TYPE}. Please use 'R' for Race, 'S' for Sprint.\n")
         return
 
     results.to_csv(OUTPUT_PATH, index=False)
 
     # Print results to console and indicate where the results have been saved
-    if config.SESSION_TYPE == "S" and not results.empty:
+    if SESSION_TYPE == "S" and not results.empty:
         print(f"\nSaved Sprint results to: {OUTPUT_PATH}\n")
-    elif config.SESSION_TYPE == "R" and not results.empty:
+    elif SESSION_TYPE == "R" and not results.empty:
         print(f"\nSaved Race results to: {OUTPUT_PATH}\n")
     else:
         print(f"\nNo results found for {YEAR} {EVENT} {SESSION_TYPE}.\n")
@@ -208,14 +208,14 @@ if __name__ == "__main__":
     session_times = f1_utils.get_time_of_day_summary(weather)
     local_start = f1_utils.get_local_session_start()
     
-    if config.SESSION_TYPE in ["R", "S"]:
+    if SESSION_TYPE in ["R", "S"]:
         pull_race_results()
-    elif config.SESSION_TYPE in ["Q", "SQ"]:
+    elif SESSION_TYPE in ["Q", "SQ"]:
         pull_quali_results()
-    elif config.SESSION_TYPE in ["FP1", "FP2", "FP3"]:
+    elif SESSION_TYPE in ["FP1", "FP2", "FP3"]:
         pull_practice_results()
     else:
-        print(f"\nInvalid session type: {config.SESSION_TYPE}. Please use 'FP1', 'FP2', 'FP3', 'Q', 'SQ', 'R', or 'S'.\n")
+        print(f"\nInvalid session type: {SESSION_TYPE}. Please use 'FP1', 'FP2', 'FP3', 'Q', 'SQ', 'R', or 'S'.\n")
 
     if weather is not None and not weather.empty:
         # Time-of-day / duration data
@@ -224,7 +224,7 @@ if __name__ == "__main__":
         # Wall-clock end = scheduled start + data duration
         local_start = f1_utils.get_local_session_start()
         local_end = local_start + timedelta(seconds=times["end_seconds"])
-        print(f"\nTiming summary (local time) for {config.YEAR} {config.EVENT} {config.SESSION_TYPE}:\n")
+        print(f"\nTiming summary (local time) for {YEAR} {EVENT} {SESSION_TYPE}:\n")
         print(f"Session commenced: {local_start.strftime('%H:%M %Z')}")
         print(f"Session ended:     {local_end.strftime('%H:%M %Z')}")
         print(f"Duration:          {times['Ending Hour']}")   # or local_end - local_start
@@ -232,7 +232,7 @@ if __name__ == "__main__":
         # Weather summary — ITS OWN name
         weather_summary = f1_utils.get_weather_summary(weather)
 
-        print(f"\nWeather summary for {config.YEAR} {config.EVENT} {config.SESSION_TYPE}:\n")
+        print(f"\nWeather summary for {YEAR} {EVENT} {SESSION_TYPE}:\n")
         print(f"Starting air temp: {weather_summary['Starting Air Temp']}°C")
         print(f"Ending air temp: {weather_summary['Ending Air Temp']}°C")
         print(f"Starting track temp: {weather_summary['Starting Track Temp']}°C")
