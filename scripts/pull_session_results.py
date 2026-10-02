@@ -97,10 +97,39 @@ def pull_practice_results():
         print(f"\nNo results found for {YEAR} {EVENT} {SESSION_TYPE}.\n")
 
     print("\n\n\n\n" + "=" * 60)
-    print(f"{YEAR} {EVENT} — {SESSION_TYPE}")
+    print(f"{YEAR} {EVENT} — {SESSION_TYPE} PRACTICE SUMMARY")
     print("=" * 60)
     print(results.to_string(index=False))
     print("\n" + "=" * 60)
+
+    results = results[[
+        "Driver",
+        "Sector1Time",
+        "Sector2Time",
+        "Sector3Time"
+    ]]
+    print("\n" + "=" * 60)
+    print(f"{YEAR} {EVENT} — {SESSION_TYPE} SECTOR SUMMARY")
+    print("=" * 60)
+    print("\n" + "Fastest Sector 1:")
+    sector_1_results = results[[
+        "Driver",
+        "Sector1Time",
+        ]]
+    print(sector_1_results.sort_values("Sector1Time").head(3).to_string(index=False))
+    print("\n" + "Fastest Sector 2:")
+    sector_2_results = results[[
+        "Driver",
+        "Sector2Time"
+    ]]
+    print(sector_2_results.sort_values("Sector2Time").head(3).to_string(index=False))
+    print("\n" + "Fastest Sector 3:")
+    sector_3_results = results[[
+        "Driver",
+        "Sector3Time"
+    ]]
+    print(sector_3_results.sort_values("Sector3Time").head(3).to_string(index=False))
+    print("=" * 60)
 
 def pull_quali_results():
     results = f1_utils.get_session_data()
@@ -163,7 +192,7 @@ def pull_quali_results():
         print(f"\nNo results found for {YEAR} {EVENT} {SESSION_TYPE}.\n")
 
     print("\n\n\n\n" + "=" * 60)
-    print(f"{YEAR} {EVENT} — {SESSION_TYPE}")
+    print(f"{YEAR} {EVENT} — {SESSION_TYPE} QUALIFYING SUMMARY")
     print("=" * 60)
     print(results.to_string(index=False))
     print("\n" + "=" * 60)
@@ -207,7 +236,7 @@ def pull_race_results():
         print(f"\nNo results found for {YEAR} {EVENT} {SESSION_TYPE}.\n")
 
     print("\n\n\n\n" + "=" * 60)
-    print(f"{YEAR} {EVENT} — {SESSION_TYPE}")
+    print(f"{YEAR} {EVENT} — {SESSION_TYPE} RACE SUMMARY")
     print("=" * 60)
     print(results.to_string(index=False))
     print("\n" + "=" * 60)
