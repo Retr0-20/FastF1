@@ -9,6 +9,9 @@ CACHE_DIR = config.CACHE_DIR
 CACHE_DIR.mkdir(exist_ok=True)
 EVENT_FOLDER = f1_utils.get_event_folder()
 fastf1.Cache.enable_cache(str(CACHE_DIR))
+OUTPUT_PATH = PROJECT_ROOT / f"data/processed/{EVENT_FOLDER}/predicted_qualifying_results.csv"
+# create file if it doesn't exist if it does exist, don't freak out (FileExistsError)
+OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
 
 # ---------------------------------------------------------------------
 # Configuration
@@ -332,3 +335,6 @@ print(display_output.to_string(index=False))
 
 print("\nSaved qualifying prediction:")
 print(prediction_path)
+
+print("\nPredicted Qualifying Order saved to CSV at:", OUTPUT_PATH)
+display_output.to_csv(OUTPUT_PATH, index=False)
