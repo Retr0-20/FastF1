@@ -7,6 +7,8 @@ practice pace, predicting qualifying outcomes, and reviewing results.
 
 # How to use
 
+pip install termcolor
+
 In order to run scripts you must navigate to the appropriate place, in my case,
 `/home/USERNAME/Documents/Code/FastF1/scripts/`
 
