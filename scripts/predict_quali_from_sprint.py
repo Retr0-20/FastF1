@@ -9,6 +9,9 @@ CACHE_DIR = config.CACHE_DIR
 CACHE_DIR.mkdir(exist_ok=True)
 EVENT_FOLDER = f1_utils.get_event_folder()
 fastf1.Cache.enable_cache(str(CACHE_DIR))
+OUTPUT_PATH = PROJECT_ROOT / f"data/predictions/{EVENT_FOLDER}/predicted_qualifying_results.csv"
+# create file if it doesn't exist if it does exist, don't freak out (FileExistsError)
+OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
 
 # ---------------------------------------------------------------------
 # Configuration
@@ -291,17 +294,9 @@ print(output_path)
 
 quali_prediction = predict_quali_from_practice(practice_features)
 
-prediction_path = (
-    PROJECT_ROOT
-    / "data"
-    / "predictions"
-    / EVENT_FOLDER
-    / f"quali_prediction_from_practice.csv"
-)
-prediction_path.parent.mkdir(parents=True, exist_ok=True)
-
 # After predict_quali_from_practice(), save prediction first
-quali_prediction.to_csv(prediction_path, index=False)
+print("\nPredicted Qualifying Order saved to CSV at:", OUTPUT_PATH)
+quali_prediction.to_csv(OUTPUT_PATH, index=False)
 
 # Create CLEAN display version (ONLY seconds, human-readable preview)
 display_output = quali_prediction[['predicted_quali_position', 'Driver', 'best_FP1_lap', 'best_FP1_theoretical_lap',
@@ -309,6 +304,3 @@ display_output = quali_prediction[['predicted_quali_position', 'Driver', 'best_F
 
 print("\nPredicted Qualifying Order (Clean Format):")
 print(display_output.to_string(index=False))
-
-print("\nSaved qualifying prediction:")
-print(prediction_path)
