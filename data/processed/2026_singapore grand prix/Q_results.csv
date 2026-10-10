@@ -1,0 +1,23 @@
+Position,Driver,DriverName,Team,Q1,Q1Seconds,Q2,Q2Seconds,Q3,Q3Seconds,Status,Potential Points
+1.0,VER,Max Verstappen,Red Bull Racing,1:33.241,93.241,1:31.639,91.639,1:31.373,91.373,,25
+2.0,LEC,Charles Leclerc,Ferrari,1:32.774,92.774,1:31.953,91.953,1:31.427,91.427,,18
+3.0,HAM,Lewis Hamilton,Ferrari,1:32.429,92.429,1:31.529,91.529,1:31.496,91.496,,15
+4.0,ANT,Kimi Antonelli,Mercedes,1:33.601,93.601,1:32.079,92.079,1:31.562,91.562,,12
+5.0,NOR,Lando Norris,McLaren,1:32.775,92.775,1:31.895,91.895,1:31.712,91.712,,10
+6.0,RUS,George Russell,Mercedes,1:33.617,93.617,1:32.212,92.212,1:31.747,91.747,,8
+7.0,PIA,Oscar Piastri,McLaren,1:33.076,93.076,1:32.245,92.245,1:31.860,91.86,,6
+8.0,GAS,Pierre Gasly,Alpine,1:33.182,93.182,1:32.602,92.602,1:32.225,92.225,,4
+9.0,LAW,Liam Lawson,Racing Bulls,1:32.885,92.885,1:32.319,92.319,1:32.369,92.369,,2
+10.0,LIN,Arvid Lindblad,Racing Bulls,1:33.288,93.288,1:32.498,92.498,1:32.781,92.781,,1
+11.0,HUL,Nico Hulkenberg,Audi,1:33.147,93.147,1:32.784,92.784,N/A,,,0
+12.0,BEA,Oliver Bearman,Haas F1 Team,1:33.356,93.356,1:32.908,92.908,N/A,,,0
+13.0,OCO,Esteban Ocon,Haas F1 Team,1:33.803,93.803,1:33.323,93.323,N/A,,,0
+14.0,SAI,Carlos Sainz,Williams,1:33.774,93.774,1:33.526,93.526,N/A,,,0
+15.0,BOR,Gabriel Bortoleto,Audi,1:34.169,94.169,1:33.658,93.658,N/A,,,0
+16.0,COL,Franco Colapinto,Alpine,1:33.261,93.261,1:33.787,93.787,N/A,,,0
+17.0,ALO,Fernando Alonso,Aston Martin,1:34.223,94.223,N/A,,N/A,,,0
+18.0,ALB,Alexander Albon,Williams,1:34.289,94.289,N/A,,N/A,,,0
+19.0,STR,Lance Stroll,Aston Martin,1:34.946,94.946,N/A,,N/A,,,0
+20.0,PER,Sergio Perez,Cadillac,1:35.123,95.123,N/A,,N/A,,,0
+21.0,BOT,Valtteri Bottas,Cadillac,1:35.984,95.984,N/A,,N/A,,,0
+22.0,HAD,Isack Hadjar,Red Bull Racing,N/A,,N/A,,N/A,,,0
