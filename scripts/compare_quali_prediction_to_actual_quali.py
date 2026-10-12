@@ -15,6 +15,8 @@ EVENT = config.EVENT
 EVENT_FOLDER = f1_utils.get_event_folder()
 PROJECT_ROOT = config.PROJECT_ROOT
 
+OUTPUT_PATH = PROJECT_ROOT / f"data/processed/{EVENT_FOLDER}/compare_predicted_quali_to_actual_quali.csv"
+
 # Pull and read the predicted qualifying positions and actual qualifying results CSVs
 prediction = pd.read_csv(PROJECT_ROOT / "data" / "predictions" / EVENT_FOLDER / f"predicted_qualifying_results.csv")
 quali_results = pd.read_csv(PROJECT_ROOT / "data" / "processed" / EVENT_FOLDER / f"Q_results.csv")
@@ -99,3 +101,6 @@ print("\nPrediction vs Actual Qualifying:")
 print(comparison.to_string(index=False))
 print(f"\n{exact_matches} out of {total_drivers} predicted CORRECTLY...")
 print(f"\nThe Driver on Pole is: {pole_driver.iloc[0]}\n")
+
+print("\nComparison saved to CSV at:", OUTPUT_PATH)
+comparison.to_csv(OUTPUT_PATH, index=False)
