@@ -19,6 +19,11 @@ PROJECT_ROOT = config.PROJECT_ROOT
 quali_results = pd.read_csv(PROJECT_ROOT / "data" / "processed" / EVENT_FOLDER / f"Q_results.csv")
 race_results = pd.read_csv(PROJECT_ROOT / "data" / "processed" / EVENT_FOLDER / f"R_results.csv")
 
+# Output path for the comparison CSV
+OUTPUT_PATH = PROJECT_ROOT / f"data/processed/{EVENT_FOLDER}/race_to_quali_comparison.csv"
+# create file if it doesn't exist if it does exist, don't freak out (FileExistsError)
+OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
+
 # Merge the race results DataFrame with the actual qualifying results DataFrame on the "Driver" column
 comparison = race_results.merge(
     quali_results,
@@ -75,7 +80,12 @@ exact_matches = (comparison["position_diff"] == 0).sum()
 winning_driver = comparison["Driver"][comparison["race_position"] == 1]
 comparison = comparison.sort_values("race_position")
 
+# Print to console
 print("\nQualifying vs Race:")
 print(comparison.to_string(index=False))
 print(f"\nThe Winning Driver is: {winning_driver.iloc[0]}")
 print(f"\nDrivers who held position: {exact_matches}\n")
+
+# Print to console to indicate where the CSV has been saved
+print("\nPredicted Qualifying Order saved to CSV at:", OUTPUT_PATH)
+comparison.to_csv(OUTPUT_PATH, index=False)
