@@ -3,6 +3,7 @@ from datetime import timedelta
 import config
 import f1_utils
 import fastf1
+import sys
 import pandas as pd
 
 PROJECT_ROOT = config.PROJECT_ROOT
@@ -243,12 +244,16 @@ def pull_race_results():
 
 if __name__ == "__main__":
 
-    if weather := f1_utils.get_weather_data() is None:
-        print(f"\nNo weather data found for {YEAR} {EVENT} {SESSION_TYPE}. Please check the session type and try again.\n")
-        exit(1)
+    try:
+        weather = f1_utils.get_weather_data()
+    except Exception:
+        weather = None
 
-    weather = f1_utils.get_weather_data()
-    local_start = f1_utils.get_local_session_start()
+    if weather is None or weather.empty:
+        print(f"\n⚠️ No data available for {YEAR} {EVENT} {SESSION_TYPE}.")
+        print("   The session may not have taken place yet, or the")
+        print("   FastF1 archive hasn't published it (24-48h post-session).")
+        sys.exit(1)
     
     if SESSION_TYPE in ["R", "S"]:
         pull_race_results()
@@ -259,28 +264,27 @@ if __name__ == "__main__":
     else:
         print(f"\nInvalid session type: {SESSION_TYPE}. Please use 'FP1', 'FP2', 'FP3', 'Q', 'SQ', 'R', or 'S'.\n")
 
-    if weather is not None and not weather.empty:
         print("\n" + "=" * 60)
-        # Time-of-day / duration data
-        times = f1_utils.get_time_of_day_summary(weather)
+    # Time-of-day / duration data
+    times = f1_utils.get_time_of_day_summary(weather)
 
-        # Wall-clock end = scheduled start + data duration
-        local_start = f1_utils.get_local_session_start()
-        local_end = local_start + timedelta(seconds=times["end_seconds"])
-        print(f"\nTiming summary (local time) for {YEAR} {EVENT} {SESSION_TYPE}:\n")
-        print(f"Session commenced: {local_start.strftime('%H:%M %Z')}")
-        print(f"Session ended:     {local_end.strftime('%H:%M %Z')}")
-        print(f"Duration:          {times['Ending Hour']}")   # or local_end - local_start
+    # Wall-clock end = scheduled start + data duration
+    local_start = f1_utils.get_local_session_start()
+    local_end = local_start + timedelta(seconds=times["end_seconds"])
+    print(f"\nTiming summary (local time) for {YEAR} {EVENT} {SESSION_TYPE}:\n")
+    print(f"Session commenced: {local_start.strftime('%H:%M %Z')}")
+    print(f"Session ended:     {local_end.strftime('%H:%M %Z')}")
+    print(f"Duration:          {times['Ending Hour']}")
 
-        # Weather summary — ITS OWN name
-        weather_summary = f1_utils.get_weather_summary(weather)
-        print("\n" + "=" * 60)
-        print(f"\nWeather summary for {YEAR} {EVENT} {SESSION_TYPE}:\n")
-        print(f"Starting air temp: {weather_summary['Starting Air Temp']}°C")
-        print(f"Ending air temp: {weather_summary['Ending Air Temp']}°C")
-        print(f"Starting track temp: {weather_summary['Starting Track Temp']}°C")
-        print(f"Ending track temp: {weather_summary['Ending Track Temp']}°C")
-        print(f"Starting Humidity: {weather_summary['Starting Humidity']}%")
-        print(f"Ending Humidity:   {weather_summary['Ending Humidity']}%")
-        print(f"Rainfall Recorded: {weather_summary['Rainfall Recorded']}\n")
-        print("=" * 60 + "\n\n\n\n")
+    # Weather summary — ITS OWN name
+    weather_summary = f1_utils.get_weather_summary(weather)
+    print("\n" + "=" * 60)
+    print(f"\nWeather summary for {YEAR} {EVENT} {SESSION_TYPE}:\n")
+    print(f"Starting air temp: {weather_summary['Starting Air Temp']}°C")
+    print(f"Ending air temp: {weather_summary['Ending Air Temp']}°C")
+    print(f"Starting track temp: {weather_summary['Starting Track Temp']}°C")
+    print(f"Ending track temp: {weather_summary['Ending Track Temp']}°C")
+    print(f"Starting Humidity: {weather_summary['Starting Humidity']}%")
+    print(f"Ending Humidity:   {weather_summary['Ending Humidity']}%")
+    print(f"Rainfall Recorded: {weather_summary['Rainfall Recorded']}\n")
+    print("=" * 60 + "\n\n\n\n")
