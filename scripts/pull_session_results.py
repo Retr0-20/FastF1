@@ -243,6 +243,10 @@ def pull_race_results():
 
 if __name__ == "__main__":
 
+    if weather := f1_utils.get_weather_data() is None:
+        print(f"\nNo weather data found for {YEAR} {EVENT} {SESSION_TYPE}. Please check the session type and try again.\n")
+        exit(1)
+
     weather = f1_utils.get_weather_data()
     local_start = f1_utils.get_local_session_start()
     
