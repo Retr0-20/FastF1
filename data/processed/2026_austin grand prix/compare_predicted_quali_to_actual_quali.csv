@@ -1,0 +1,23 @@
+Driver,Team,Predicted Position,Actual Position,Change Arrow,Prediction Outcome
+ANT,Mercedes,4,1,↑3,Underestimated
+VER,Red Bull Racing,2,2,→,Spot On
+HAD,Red Bull Racing,9,3,↑6,Underestimated
+LEC,Ferrari,1,4,↓3,Overestimated
+HAM,Ferrari,3,5,↓2,Overestimated
+RUS,Mercedes,5,6,↓1,Overestimated
+PIA,McLaren,6,7,↓1,Overestimated
+NOR,McLaren,7,8,↓1,Overestimated
+LIN,Racing Bulls,12,9,↑3,Underestimated
+LAW,Racing Bulls,8,10,↓2,Overestimated
+GAS,Alpine,10,11,↓1,Overestimated
+HUL,Audi,11,12,↓1,Overestimated
+BOR,Audi,13,13,→,Spot On
+COL,Alpine,15,14,↑1,Underestimated
+ALO,Aston Martin,16,15,↑1,Underestimated
+BEA,Haas F1 Team,14,16,↓2,Overestimated
+OCO,Haas F1 Team,17,17,→,Spot On
+STR,Aston Martin,18,18,→,Spot On
+SAI,Williams,19,19,→,Spot On
+ALB,Williams,22,20,↑2,Underestimated
+PER,Cadillac,20,21,↓1,Overestimated
+BOT,Cadillac,21,22,↓1,Overestimated
