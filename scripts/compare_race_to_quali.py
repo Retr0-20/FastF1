@@ -16,7 +16,7 @@ EVENT_FOLDER = f1_utils.get_event_folder()
 PROJECT_ROOT = config.PROJECT_ROOT
 
 # Pull and read the predicted qualifying positions and actual qualifying results CSVs
-quali_results = pd.read_csv(PROJECT_ROOT / "data" / "predicted" / EVENT_FOLDER / f"Q_results.csv")
+quali_results = pd.read_csv(PROJECT_ROOT / "data" / "processed" / EVENT_FOLDER / f"Q_results.csv")
 race_results = pd.read_csv(PROJECT_ROOT / "data" / "processed" / EVENT_FOLDER / f"R_results.csv")
 
 # Output path for the comparison CSV

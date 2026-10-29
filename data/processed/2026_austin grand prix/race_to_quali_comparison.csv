@@ -1,0 +1,23 @@
+Driver,Team,race_position,quali_position,position_diff,change_arrow
+ANT,Mercedes,1,1,0,→
+LEC,Ferrari,2,4,2,↑2.0
+VER,Red Bull Racing,3,2,1,↓1.0
+HAM,Ferrari,4,5,1,↑1.0
+NOR,McLaren,5,8,3,↑3.0
+HAD,Red Bull Racing,6,3,3,↓3.0
+PIA,McLaren,7,7,0,→
+RUS,Mercedes,8,6,2,↓2.0
+LAW,Racing Bulls,9,10,1,↑1.0
+GAS,Alpine,10,11,1,↑1.0
+HUL,Audi,11,12,1,↑1.0
+LIN,Racing Bulls,12,9,3,↓3.0
+BOR,Audi,13,13,0,→
+OCO,Haas F1 Team,14,17,3,↑3.0
+STR,Aston Martin,15,18,3,↑3.0
+ALO,Aston Martin,16,15,1,↓1.0
+ALB,Williams,17,20,3,↑3.0
+SAI,Williams,18,19,1,↑1.0
+PER,Cadillac,19,21,2,↑2.0
+BOT,Cadillac,20,22,2,↑2.0
+COL,Alpine,21,14,7,↓7.0
+BEA,Haas F1 Team,22,16,6,↓6.0
