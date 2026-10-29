@@ -9,7 +9,7 @@ import pandas as pd
 PROJECT_ROOT = config.PROJECT_ROOT
 CACHE_DIR = config.CACHE_DIR
 CACHE_DIR.mkdir(exist_ok=True)
-fastf1.Cache.enable_cache(str(CACHE_DIR))
+fastf1.Cache.configure(cache_dir=CACHE_DIR)
 
 # ---------------------------------------------------------------------
 # Configurable information for Grand Prixs
