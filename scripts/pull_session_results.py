@@ -247,6 +247,9 @@ def pull_race_results():
 
     # GridPosition as a clean nullable integer (no 5.0-style floats)
     results["GridPosition"] = pd.to_numeric(results["GridPosition"], errors="coerce").astype("Int64")
+    if results["GridPosition"].isna().all():
+        print(f"\n⚠️ Grid positions not yet official for {YEAR} {EVENT} — skipping write")
+        return
 
     # Grid -> classified position change arrow (what the driver did on Sunday)
     numeric_finish = pd.to_numeric(results["Position"], errors="coerce")
