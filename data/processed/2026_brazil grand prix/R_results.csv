@@ -1,23 +1,23 @@
 Position,Driver,Driver Name,Team,GridPosition,Status,Change,Points
-1,NOR,Lando Norris,McLaren,-1,Finished,↓2,25
-2,VER,Max Verstappen,Red Bull Racing,-1,Finished,↓3,18
-3,HAD,Isack Hadjar,Red Bull Racing,-1,Finished,↓4,15
-4,RUS,George Russell,Mercedes,-1,Finished,↓5,12
-5,ANT,Kimi Antonelli,Mercedes,-1,Finished,↓6,10
-6,PIA,Oscar Piastri,McLaren,-1,Finished,↓7,8
-7,LEC,Charles Leclerc,Ferrari,-1,Finished,↓8,6
-8,LAW,Liam Lawson,Racing Bulls,-1,Finished,↓9,4
-9,HAM,Lewis Hamilton,Ferrari,-1,Lapped,↓10,2
-10,HUL,Nico Hulkenberg,Audi,-1,Lapped,↓11,1
-11,LIN,Arvid Lindblad,Racing Bulls,-1,Lapped,↓12,0
-12,ALO,Fernando Alonso,Aston Martin,-1,Lapped,↓13,0
-13,COL,Franco Colapinto,Alpine,-1,Lapped,↓14,0
-14,GAS,Pierre Gasly,Alpine,-1,Lapped,↓15,0
-15,ALB,Alexander Albon,Williams,-1,Lapped,↓16,0
-16,BOR,Gabriel Bortoleto,Audi,-1,Lapped,↓17,0
-17,BEA,Oliver Bearman,Haas F1 Team,-1,Lapped,↓18,0
-18,PER,Sergio Perez,Cadillac,-1,Lapped,↓19,0
-19,SAI,Carlos Sainz,Williams,-1,Lapped,↓20,0
-20,CAM,Rafael Câmara,Haas F1 Team,-1,Lapped,↓21,0
-R,STR,Lance Stroll,Aston Martin,-1,Retired,OUT,0
-W,BOT,Valtteri Bottas,Cadillac,-1,Did not start,OUT,0
+1,NOR,Lando Norris,McLaren,—,Finished,—,25
+2,VER,Max Verstappen,Red Bull Racing,—,Finished,—,18
+3,HAD,Isack Hadjar,Red Bull Racing,—,Finished,—,15
+4,RUS,George Russell,Mercedes,—,Finished,—,12
+5,ANT,Kimi Antonelli,Mercedes,—,Finished,—,10
+6,PIA,Oscar Piastri,McLaren,—,Finished,—,8
+7,LEC,Charles Leclerc,Ferrari,—,Finished,—,6
+8,LAW,Liam Lawson,Racing Bulls,—,Finished,—,4
+9,HAM,Lewis Hamilton,Ferrari,—,Lapped,—,2
+10,HUL,Nico Hulkenberg,Audi,—,Lapped,—,1
+11,LIN,Arvid Lindblad,Racing Bulls,—,Lapped,—,0
+12,ALO,Fernando Alonso,Aston Martin,—,Lapped,—,0
+13,COL,Franco Colapinto,Alpine,—,Lapped,—,0
+14,GAS,Pierre Gasly,Alpine,—,Lapped,—,0
+15,ALB,Alexander Albon,Williams,—,Lapped,—,0
+16,BOR,Gabriel Bortoleto,Audi,—,Lapped,—,0
+17,BEA,Oliver Bearman,Haas F1 Team,—,Lapped,—,0
+18,PER,Sergio Perez,Cadillac,—,Lapped,—,0
+19,SAI,Carlos Sainz,Williams,—,Lapped,—,0
+20,CAM,Rafael Câmara,Haas F1 Team,—,Lapped,—,0
+R,STR,Lance Stroll,Aston Martin,—,Retired,—,0
+W,BOT,Valtteri Bottas,Cadillac,—,Did not start,—,0

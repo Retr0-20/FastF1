@@ -247,16 +247,24 @@ def pull_race_results():
 
     # GridPosition as a clean nullable integer (no 5.0-style floats)
     results["GridPosition"] = pd.to_numeric(results["GridPosition"], errors="coerce").astype("Int64")
-    if results["GridPosition"].isna().all():
-        print(f"\n⚠️ Grid positions not yet official for {YEAR} {EVENT} — skipping write")
-        return
-
-    # Grid -> classified position change arrow (what the driver did on Sunday)
+    numeric_grid = results["GridPosition"].astype("Float64")      # nullable-aware comparison
     numeric_finish = pd.to_numeric(results["Position"], errors="coerce")
-    results["Change"] = [
-        change_arrow(grid, finish)
-        for grid, finish in zip(results["GridPosition"], numeric_finish)
-    ]
+
+    # Grids are unusable if entirely missing (NaN) or all sentinels (< 0).
+    # FastF1 returns -1 for "grid not yet assigned" on fresh sessions.
+    grids_available = not (numeric_grid.isna().all() or (numeric_grid < 0).all())
+
+    if not grids_available:
+        # Degrade gracefully: real classification, but arrows impossible.
+        # Write the CSV anyway the results themselves are trustworthy.
+        print(f"\n⚠️ Grid positions not yet available for {YEAR} {EVENT} — Change column disabled")
+        results["Change"] = "—"
+        results["GridPosition"] = "—"
+    else:
+        results["Change"] = [
+            change_arrow(grid, finish)
+            for grid, finish in zip(numeric_grid, numeric_finish)
+        ]
 
     # If Session Type is Sprint, assign points based on Sprint points map
     # NOTE: ClassifiedPosition is a string ("1".."R"), so change to numeric before mapping
@@ -270,6 +278,18 @@ def pull_race_results():
     else:
         print(f"\nInvalid session type: {SESSION_TYPE}. Please use 'R' for Race, 'S' for Sprint.\n")
         return
+
+    # Final column order: GridPosition and Change at the back
+    results = results[[
+        "Position",
+        "Driver",
+        "Driver Name",
+        "Team",
+        "Status",
+        "Points",
+        "GridPosition",
+        "Change"
+    ]]
 
     # Sort the table by classified position for a readable summary
     numeric_sort = pd.to_numeric(results["Position"], errors="coerce")
