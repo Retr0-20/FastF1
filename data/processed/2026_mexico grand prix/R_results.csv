@@ -1,23 +1,23 @@
-Position,Driver,Driver Name,Team,Points
-1.0,VER,Max Verstappen,Red Bull Racing,25
-2.0,HAM,Lewis Hamilton,Ferrari,18
-3.0,ANT,Kimi Antonelli,Mercedes,15
-4.0,LEC,Charles Leclerc,Ferrari,12
-5.0,NOR,Lando Norris,McLaren,10
-6.0,RUS,George Russell,Mercedes,8
-7.0,PIA,Oscar Piastri,McLaren,6
-8.0,COL,Franco Colapinto,Alpine,4
-9.0,LAW,Liam Lawson,Racing Bulls,2
-10.0,GAS,Pierre Gasly,Alpine,1
-11.0,BOR,Gabriel Bortoleto,Audi,0
-12.0,HAD,Isack Hadjar,Red Bull Racing,0
-13.0,HIR,None None,None,0
-14.0,ALB,Alexander Albon,Williams,0
-15.0,SAI,Carlos Sainz,Williams,0
-16.0,HUL,Nico Hulkenberg,Audi,0
-17.0,PER,Sergio Perez,Cadillac,0
-18.0,LIN,Arvid Lindblad,Racing Bulls,0
-19.0,BEA,Oliver Bearman,Haas F1 Team,0
-20.0,BOT,Valtteri Bottas,Cadillac,0
-21.0,STR,Lance Stroll,Aston Martin,0
-22.0,ALO,Fernando Alonso,Aston Martin,0
+Position,GridPosition,Driver,Driver Name,Team,Status,Points
+1,5,VER,Max Verstappen,Red Bull Racing,Finished,25
+2,1,HAM,Lewis Hamilton,Ferrari,Finished,18
+3,4,ANT,Kimi Antonelli,Mercedes,Finished,15
+4,3,LEC,Charles Leclerc,Ferrari,Finished,12
+5,6,NOR,Lando Norris,McLaren,Finished,10
+6,2,RUS,George Russell,Mercedes,Finished,8
+7,22,LAW,Liam Lawson,Racing Bulls,Finished,6
+8,13,BOR,Gabriel Bortoleto,Audi,Finished,4
+9,7,HAD,Isack Hadjar,Red Bull Racing,Finished,2
+10,18,HIR,Ryo Hirakawa,Haas F1 Team,Finished,1
+11,16,ALB,Alexander Albon,Williams,Finished,0
+12,15,SAI,Carlos Sainz,Williams,Finished,0
+13,12,PIA,Oscar Piastri,McLaren,Finished,0
+14,10,HUL,Nico Hulkenberg,Audi,Finished,0
+15,11,COL,Franco Colapinto,Alpine,Finished,0
+16,20,PER,Sergio Perez,Cadillac,Finished,0
+17,9,GAS,Pierre Gasly,Alpine,Finished,0
+18,8,LIN,Arvid Lindblad,Racing Bulls,Retired,0
+19,14,BEA,Oliver Bearman,Haas F1 Team,Retired,0
+20,21,BOT,Valtteri Bottas,Cadillac,Retired,0
+21,19,STR,Lance Stroll,Aston Martin,Retired,0
+22,17,ALO,Fernando Alonso,Aston Martin,Retired,0

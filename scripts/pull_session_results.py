@@ -135,6 +135,12 @@ def pull_practice_results():
 def pull_quali_results():
     results = f1_utils.get_session_data()
 
+    results["GridPosition"] = results["GridPosition"].astype("Int64")
+    # Guard: if no Q1 times exist, the session data is not available/official yet
+    if results["Q1"].isna().all():
+        print(f"\n⚠️ Qualifying results not yet official for {YEAR} {EVENT} — skipping write")
+        return
+
     results["Q1Seconds"] = results["Q1"].apply(f1_utils.time_to_seconds)
     results["Q2Seconds"] = results["Q2"].apply(f1_utils.time_to_seconds)
     results["Q3Seconds"] = results["Q3"].apply(f1_utils.time_to_seconds)
@@ -201,6 +207,12 @@ def pull_quali_results():
 def pull_race_results():
     results = f1_utils.get_session_data()
 
+    results["Position"] = results["Position"].astype("Int64")
+    results["GridPosition"] = results["GridPosition"].astype("Int64")
+    if results["Position"].isna().all():
+        print(f"\n⚠️ Results not yet official for {YEAR} {EVENT} — skipping write")
+        return
+
     # Amend DataFrame column names across all session types for consistency
     results = results.rename(columns={
         "Abbreviation": "Driver",
@@ -210,9 +222,11 @@ def pull_race_results():
 
     results = results[[
                 "Position",
+                "GridPosition",
                 "Driver",
                 "Driver Name",
-                "Team"
+                "Team",
+                "Status"
             ]]
 
     # If Session Type is Sprint, assign points based on Sprint points map
@@ -263,8 +277,8 @@ if __name__ == "__main__":
         pull_practice_results()
     else:
         print(f"\nInvalid session type: {SESSION_TYPE}. Please use 'FP1', 'FP2', 'FP3', 'Q', 'SQ', 'R', or 'S'.\n")
+        sys.exit(1)
 
-        print("\n" + "=" * 60)
     # Time-of-day / duration data
     times = f1_utils.get_time_of_day_summary(weather)
 
