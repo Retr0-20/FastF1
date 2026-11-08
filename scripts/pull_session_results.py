@@ -20,8 +20,22 @@ SESSION_TYPE = config.SESSION_TYPE
 EVENT_FOLDER = f1_utils.get_event_folder()
 
 OUTPUT_PATH = PROJECT_ROOT / f"data/processed/{EVENT_FOLDER}/{SESSION_TYPE}_results.csv"
-# create file if it doesn't exist if it does exist, don't freak out (FileExistsError)
+# create folder if it doesn't exist if it does exist, don't freak out (FileExistsError)
 OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
+
+
+def change_arrow(before, after):
+    """Return a directional arrow string for a position change."""
+    if pd.isna(before):
+        return "PIT"        # pit-lane start: no grid slot, change can't be quantified
+    if pd.isna(after):
+        return "OUT"        # did not finish
+    if before > after:
+        return f"↑{int(before - after)}"
+    if after > before:
+        return f"↓{int(after - before)}"
+    return "→"
+
 
 def pull_practice_results():
 
@@ -132,10 +146,10 @@ def pull_practice_results():
     print(sector_3_results.sort_values("Sector3Time").head(3).to_string(index=False))
     print("=" * 60)
 
+
 def pull_quali_results():
     results = f1_utils.get_session_data()
 
-    results["GridPosition"] = results["GridPosition"].astype("Int64")
     # Guard: if no Q1 times exist, the session data is not available/official yet
     if results["Q1"].isna().all():
         print(f"\n⚠️ Qualifying results not yet official for {YEAR} {EVENT} — skipping write")
@@ -180,10 +194,12 @@ def pull_quali_results():
                 })
 
     # If Session Type is Qualifying or Sprint Qualifying, assign points based on the respective points map
+    # NOTE: Position can be a string, so coerce to numeric before mapping
+    numeric_pos = pd.to_numeric(results["Position"], errors="coerce")
     if SESSION_TYPE == "Q":
-        results['Potential Points'] = results['Position'].map(f1_utils.points_map).fillna(0).astype(int)
+        results['Potential Points'] = numeric_pos.map(f1_utils.points_map).fillna(0).astype(int)
     elif SESSION_TYPE == "SQ":
-        results['Potential Points'] = results['Position'].map(f1_utils.points_map_sprint).fillna(0).astype(int)
+        results['Potential Points'] = numeric_pos.map(f1_utils.points_map_sprint).fillna(0).astype(int)
     else:
         print(f"\nInvalid session type: {SESSION_TYPE}. Please use 'Q' for Qualifying or 'SQ' for Sprint Qualifying.\n")
         return
@@ -204,11 +220,11 @@ def pull_quali_results():
     print(results.to_string(index=False))
     print("\n" + "=" * 60)
 
+
 def pull_race_results():
     results = f1_utils.get_session_data()
 
-    results["Position"] = results["Position"].astype("Int64")
-    results["GridPosition"] = results["GridPosition"].astype("Int64")
+    results["Position"] = results["ClassifiedPosition"]
     if results["Position"].isna().all():
         print(f"\n⚠️ Results not yet official for {YEAR} {EVENT} — skipping write")
         return
@@ -222,23 +238,39 @@ def pull_race_results():
 
     results = results[[
                 "Position",
-                "GridPosition",
                 "Driver",
                 "Driver Name",
                 "Team",
+                "GridPosition",
                 "Status"
             ]]
 
+    # GridPosition as a clean nullable integer (no 5.0-style floats)
+    results["GridPosition"] = pd.to_numeric(results["GridPosition"], errors="coerce").astype("Int64")
+
+    # Grid -> classified position change arrow (what the driver did on Sunday)
+    numeric_finish = pd.to_numeric(results["Position"], errors="coerce")
+    results["Change"] = [
+        change_arrow(grid, finish)
+        for grid, finish in zip(results["GridPosition"], numeric_finish)
+    ]
+
     # If Session Type is Sprint, assign points based on Sprint points map
+    # NOTE: ClassifiedPosition is a string ("1".."R"), so change to numeric before mapping
+    numeric_pos = pd.to_numeric(results["Position"], errors="coerce")
     if SESSION_TYPE == "S":
-        results['Points'] = results['Position'].map(f1_utils.points_map_sprint).fillna(0).astype(int)
+        results['Points'] = numeric_pos.map(f1_utils.points_map_sprint).fillna(0).astype(int)
     # If Session Type is Race, assign points based on Race points map
     elif SESSION_TYPE == "R":
-        results['Points'] = results['Position'].map(f1_utils.points_map).fillna(0).astype(int)
+        results['Points'] = numeric_pos.map(f1_utils.points_map).fillna(0).astype(int)
     # If Session Type is not recognized, print an error message and return
     else:
         print(f"\nInvalid session type: {SESSION_TYPE}. Please use 'R' for Race, 'S' for Sprint.\n")
         return
+
+    # Sort the table by classified position for a readable summary
+    numeric_sort = pd.to_numeric(results["Position"], errors="coerce")
+    results = results.assign(_sort=numeric_sort.fillna(999)).sort_values("_sort").drop(columns="_sort")
 
     results.to_csv(OUTPUT_PATH, index=False)
 
@@ -256,6 +288,7 @@ def pull_race_results():
     print(results.to_string(index=False))
     print("\n" + "=" * 60)
 
+
 if __name__ == "__main__":
 
     try:
@@ -268,7 +301,7 @@ if __name__ == "__main__":
         print("   The session may not have taken place yet, or the")
         print("   FastF1 archive hasn't published it (24-48h post-session).")
         sys.exit(1)
-    
+
     if SESSION_TYPE in ["R", "S"]:
         pull_race_results()
     elif SESSION_TYPE in ["Q", "SQ"]:

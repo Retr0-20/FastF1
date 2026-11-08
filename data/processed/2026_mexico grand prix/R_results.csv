@@ -1,23 +1,23 @@
-Position,GridPosition,Driver,Driver Name,Team,Status,Points
-1,5,VER,Max Verstappen,Red Bull Racing,Finished,25
-2,1,HAM,Lewis Hamilton,Ferrari,Finished,18
-3,4,ANT,Kimi Antonelli,Mercedes,Finished,15
-4,3,LEC,Charles Leclerc,Ferrari,Finished,12
-5,6,NOR,Lando Norris,McLaren,Finished,10
-6,2,RUS,George Russell,Mercedes,Finished,8
-7,22,LAW,Liam Lawson,Racing Bulls,Finished,6
-8,13,BOR,Gabriel Bortoleto,Audi,Finished,4
-9,7,HAD,Isack Hadjar,Red Bull Racing,Finished,2
-10,18,HIR,Ryo Hirakawa,Haas F1 Team,Finished,1
-11,16,ALB,Alexander Albon,Williams,Finished,0
-12,15,SAI,Carlos Sainz,Williams,Finished,0
-13,12,PIA,Oscar Piastri,McLaren,Finished,0
-14,10,HUL,Nico Hulkenberg,Audi,Finished,0
-15,11,COL,Franco Colapinto,Alpine,Finished,0
-16,20,PER,Sergio Perez,Cadillac,Finished,0
-17,9,GAS,Pierre Gasly,Alpine,Finished,0
-18,8,LIN,Arvid Lindblad,Racing Bulls,Retired,0
-19,14,BEA,Oliver Bearman,Haas F1 Team,Retired,0
-20,21,BOT,Valtteri Bottas,Cadillac,Retired,0
-21,19,STR,Lance Stroll,Aston Martin,Retired,0
-22,17,ALO,Fernando Alonso,Aston Martin,Retired,0
+Position,Driver,Driver Name,Team,GridPosition,Status,Change,Points
+1,VER,Max Verstappen,Red Bull Racing,5,Finished,↑4,25
+2,HAM,Lewis Hamilton,Ferrari,1,Finished,↓1,18
+3,ANT,Kimi Antonelli,Mercedes,4,Finished,↑1,15
+4,LEC,Charles Leclerc,Ferrari,3,Finished,↓1,12
+5,NOR,Lando Norris,McLaren,6,Finished,↑1,10
+6,RUS,George Russell,Mercedes,2,Finished,↓4,8
+7,LAW,Liam Lawson,Racing Bulls,22,Finished,↑15,6
+8,BOR,Gabriel Bortoleto,Audi,13,Finished,↑5,4
+9,HAD,Isack Hadjar,Red Bull Racing,7,Finished,↓2,2
+10,HIR,Ryo Hirakawa,Haas F1 Team,18,Finished,↑8,1
+11,ALB,Alexander Albon,Williams,16,Finished,↑5,0
+12,SAI,Carlos Sainz,Williams,15,Finished,↑3,0
+13,PIA,Oscar Piastri,McLaren,12,Finished,↓1,0
+14,HUL,Nico Hulkenberg,Audi,10,Finished,↓4,0
+15,COL,Franco Colapinto,Alpine,11,Finished,↓4,0
+16,PER,Sergio Perez,Cadillac,20,Finished,↑4,0
+17,GAS,Pierre Gasly,Alpine,9,Finished,↓8,0
+R,LIN,Arvid Lindblad,Racing Bulls,8,Retired,OUT,0
+R,BEA,Oliver Bearman,Haas F1 Team,14,Retired,OUT,0
+R,BOT,Valtteri Bottas,Cadillac,21,Retired,OUT,0
+R,STR,Lance Stroll,Aston Martin,19,Retired,OUT,0
+R,ALO,Fernando Alonso,Aston Martin,17,Retired,OUT,0

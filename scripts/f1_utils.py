@@ -52,6 +52,7 @@ def get_weather_data():
 
 # ----------------------------------------------
 # Utility function for printing a weather summary for the specified year, event, and session type
+# Utility function for printing a weather summary for the specified year, event, and session type
 def get_weather_summary(weather):
 
     clean = weather[weather["TrackTemp"] > 0]
