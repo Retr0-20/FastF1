@@ -53,8 +53,11 @@ def get_weather_data():
 # ----------------------------------------------
 # Utility function for printing a weather summary for the specified year, event, and session type
 def get_weather_summary(weather):
-    first = weather.iloc[0]
-    last = weather.iloc[-1]
+
+    clean = weather[weather["TrackTemp"] > 0]
+    
+    first = clean.iloc[0]
+    last = clean.iloc[-1]
 
     return {
         "Starting Air Temp": first['AirTemp'],
