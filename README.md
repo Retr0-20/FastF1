@@ -1,7 +1,7 @@
 # FastF1 Analysis Scripts
 
 Python scripts for pulling Formula 1 session data via the
-[FastF1](https://docs.fastf1.dev) library and analyzing it — comparing
+[FastF1](https://docs.fastf1.dev) library and analyzing it, comparing
 practice pace, predicting qualifying outcomes, and reviewing results.
 
 
