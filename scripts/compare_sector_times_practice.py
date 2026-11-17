@@ -19,7 +19,7 @@ fp1["Team"] = fp1["Team"].fillna("")
 fp2["Team"] = fp2["Team"].fillna("")
 fp3["Team"] = fp3["Team"].fillna("")
 
-# Now merge on Driver only (drop Team from merge keys)
+# Now merge on Driver only, drop Team from merge
 comparison = fp3.merge(fp1.merge(
     fp2,
     on=["Driver"],
@@ -53,5 +53,6 @@ comparison = comparison[[
     "S3Time_FP3"
 ]]
 
-print("\nFP1 vs FP2 vs FP3 Sector Times:")
-print(comparison.to_string(index=False))
+for driver in comparison["Driver"].unique():
+    print("\nFP1 vs FP2 vs FP3 Sector Times:")
+    print(comparison[comparison["Driver"] == driver].head(5).to_string(index=False))
