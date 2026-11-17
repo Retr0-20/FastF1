@@ -27,7 +27,7 @@ OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
 def change_arrow(before, after):
     """Return a directional arrow string for a position change."""
     if pd.isna(before):
-        return "PIT"        # pit-lane start: no grid slot, change can't be quantified
+        return "PIT"        # pit-lane start: no grid slot, better than nothing
     if pd.isna(after):
         return "OUT"        # did not finish
     if before > after:
@@ -152,7 +152,7 @@ def pull_quali_results():
 
     # Guard: if no Q1 times exist, the session data is not available/official yet
     if results["Q1"].isna().all():
-        print(f"\n⚠️ Qualifying results not yet official for {YEAR} {EVENT} — skipping write")
+        print(f"\nQualifying results not yet official for {YEAR} {EVENT} — skipping write")
         return
 
     results["Q1Seconds"] = results["Q1"].apply(f1_utils.time_to_seconds)
@@ -226,7 +226,7 @@ def pull_race_results():
 
     results["Position"] = results["ClassifiedPosition"]
     if results["Position"].isna().all():
-        print(f"\n⚠️ Results not yet official for {YEAR} {EVENT} — skipping write")
+        print(f"\nResults not yet official for {YEAR} {EVENT} — skipping write")
         return
 
     # Amend DataFrame column names across all session types for consistency
@@ -250,14 +250,14 @@ def pull_race_results():
     numeric_grid = results["GridPosition"].astype("Float64")      # nullable-aware comparison
     numeric_finish = pd.to_numeric(results["Position"], errors="coerce")
 
-    # Grids are unusable if entirely missing (NaN) or all sentinels (< 0).
+    # Grids are unusable if entirely missing (NaN) or all 0.
     # FastF1 returns -1 for "grid not yet assigned" on fresh sessions.
     grids_available = not (numeric_grid.isna().all() or (numeric_grid < 0).all())
 
     if not grids_available:
         # Degrade gracefully: real classification, but arrows impossible.
         # Write the CSV anyway the results themselves are trustworthy.
-        print(f"\n⚠️ Grid positions not yet available for {YEAR} {EVENT} — Change column disabled")
+        print(f"\nGrid positions not yet available for {YEAR} {EVENT} — Change column disabled")
         results["Change"] = "—"
         results["GridPosition"] = "—"
     else:
@@ -320,7 +320,7 @@ if __name__ == "__main__":
         weather = None
 
     if weather is None or weather.empty:
-        print(f"\n⚠️ No data available for {YEAR} {EVENT} {SESSION_TYPE}.")
+        print(f"\nNo data available for {YEAR} {EVENT} {SESSION_TYPE}.")
         print("   The session may not have taken place yet, or the")
         print("   FastF1 archive hasn't published it (24-48h post-session).")
         sys.exit(1)
