@@ -39,7 +39,11 @@ comparison["S3Time_FP1"] = comparison["Sector3Seconds_x"]
 comparison["S3Time_FP2"] = comparison["Sector3Seconds_y"]
 comparison["S3Time_FP3"] = comparison["Sector3Seconds"]
 
-comparison = comparison[[
+all_laps = comparison.sort_values("LapTimeSeconds", ascending=True)
+
+top_5 = all_laps.groupby("Driver", sort=False).head(5)
+
+top_5 = top_5[[
     "Driver",
     "Team",
     "S1Time_FP1",
@@ -53,6 +57,6 @@ comparison = comparison[[
     "S3Time_FP3"
 ]]
 
-for driver in comparison["Driver"].unique():
-    print("\nFP1 vs FP2 vs FP3 Sector Times:")
-    print(comparison[comparison["Driver"] == driver].head(5).to_string(index=False))
+for driver in top_5["Driver"].unique():
+    print(f"\nTop 5 fastest laps for {driver}:")
+    print(top_5[top_5["Driver"] == driver].to_string(index=False))
