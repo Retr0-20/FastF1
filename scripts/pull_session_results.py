@@ -11,16 +11,14 @@ CACHE_DIR = config.CACHE_DIR
 CACHE_DIR.mkdir(exist_ok=True)
 fastf1.Cache.configure(cache_dir=CACHE_DIR)
 
-# ---------------------------------------------------------------------
-# Configurable information for Grand Prixs
-# ---------------------------------------------------------------------
+# set these per weekend
 YEAR = config.YEAR
 EVENT = config.EVENT
 SESSION_TYPE = config.SESSION_TYPE
 EVENT_FOLDER = f1_utils.get_event_folder()
 
 OUTPUT_PATH = PROJECT_ROOT / f"data/processed/{EVENT_FOLDER}/{SESSION_TYPE}_results.csv"
-# create folder if it doesn't exist if it does exist, don't freak out (FileExistsError)
+# create file if it doesn't exist if it does exist, don't freak out (FileExistsError)
 OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
 
 
@@ -51,7 +49,6 @@ def pull_practice_results():
         (laps["Deleted"] == False)
     ]
 
-    # Convert LapTime to seconds for easier comparison and sorting
     laps["LapTimeSeconds"] = laps["LapTime"].apply(f1_utils.time_to_seconds)
 
     # Fastest valid lap per driver
@@ -62,32 +59,17 @@ def pull_practice_results():
         .reset_index()
     )
 
-    # Convert best lap time to seconds for easier comparison and sorting
     results["BestLap"] = results["LapTimeSeconds"].apply(f1_utils.seconds_to_lap_time)
 
-    # Select relevant columns and sort by lap time
-    results = results[[
-        "Driver",
-        "Team",
-        "BestLap",
-        "LapTimeSeconds",
-        "Compound",
-        "TyreLife",
-        "TrackStatus",
-        "Sector1Time",
-        "Sector2Time",
-        "Sector3Time"
-    ]]
-
-    # Sort by lap time and assign position
-    results = results.sort_values("LapTimeSeconds").reset_index(drop=True)
-    results["Position"] = range(1, len(results) + 1)
     # Convert sector times to seconds for easier comparison and sorting
     results["Sector1Time"] = results["Sector1Time"].apply(f1_utils.time_to_seconds)
     results["Sector2Time"] = results["Sector2Time"].apply(f1_utils.time_to_seconds)
     results["Sector3Time"] = results["Sector3Time"].apply(f1_utils.time_to_seconds)
 
-    # Append position to DataFrame
+    # Sort by lap time and assign position
+    results = results.sort_values("LapTimeSeconds").reset_index(drop=True)
+    results["Position"] = range(1, len(results) + 1)
+
     results = results[[
         "Position",
         "Driver",
@@ -107,7 +89,7 @@ def pull_practice_results():
 
     # Print results to console for debugging purposes
     if not results.empty:
-        print(f"\nSaved Free Practice " f"{SESSION_TYPE}" " results to: " f"{OUTPUT_PATH}\n")
+        print(f"\nSaved Free Practice {SESSION_TYPE} results to: {OUTPUT_PATH}\n")
     else:
         print(f"\nNo results found for {YEAR} {EVENT} {SESSION_TYPE}.\n")
 
@@ -193,8 +175,7 @@ def pull_quali_results():
                     "Q3Seconds": "SQ3Seconds",
                 })
 
-    # If Session Type is Qualifying or Sprint Qualifying, assign points based on the respective points map
-    # NOTE: Position can be a string, so coerce to numeric before mapping
+    # Position can be a string, so coerce to numeric before points mapping
     numeric_pos = pd.to_numeric(results["Position"], errors="coerce")
     if SESSION_TYPE == "Q":
         results['Potential Points'] = numeric_pos.map(f1_utils.points_map).fillna(0).astype(int)
@@ -229,7 +210,6 @@ def pull_race_results():
         print(f"\nResults not yet official for {YEAR} {EVENT} — skipping write")
         return
 
-    # Amend DataFrame column names across all session types for consistency
     results = results.rename(columns={
         "Abbreviation": "Driver",
         "FullName": "Driver Name",
@@ -247,16 +227,15 @@ def pull_race_results():
 
     # GridPosition as a clean nullable integer (no 5.0-style floats)
     results["GridPosition"] = pd.to_numeric(results["GridPosition"], errors="coerce").astype("Int64")
-    numeric_grid = results["GridPosition"].astype("Float64")      # nullable-aware comparison
+    numeric_grid = results["GridPosition"].astype("Float64")   # Float64 not Int64, NA-safe comparison
     numeric_finish = pd.to_numeric(results["Position"], errors="coerce")
 
-    # Grids are unusable if entirely missing (NaN) or all 0.
+    # Grids are unusable if entirely missing (NaN) or all sentinels (< 0).
     # FastF1 returns -1 for "grid not yet assigned" on fresh sessions.
     grids_available = not (numeric_grid.isna().all() or (numeric_grid < 0).all())
 
     if not grids_available:
-        # Degrade gracefully: real classification, but arrows impossible.
-        # Write the CSV anyway the results themselves are trustworthy.
+        # grid data missing, arrows off but results themselves are good
         print(f"\nGrid positions not yet available for {YEAR} {EVENT} — Change column disabled")
         results["Change"] = "—"
         results["GridPosition"] = "—"
@@ -266,15 +245,12 @@ def pull_race_results():
             for grid, finish in zip(numeric_grid, numeric_finish)
         ]
 
-    # If Session Type is Sprint, assign points based on Sprint points map
-    # NOTE: ClassifiedPosition is a string ("1".."R"), so change to numeric before mapping
+    # ClassifiedPosition is a string ("1".."R"), so coerce to numeric before points mapping
     numeric_pos = pd.to_numeric(results["Position"], errors="coerce")
     if SESSION_TYPE == "S":
         results['Points'] = numeric_pos.map(f1_utils.points_map_sprint).fillna(0).astype(int)
-    # If Session Type is Race, assign points based on Race points map
     elif SESSION_TYPE == "R":
         results['Points'] = numeric_pos.map(f1_utils.points_map).fillna(0).astype(int)
-    # If Session Type is not recognized, print an error message and return
     else:
         print(f"\nInvalid session type: {SESSION_TYPE}. Please use 'R' for Race, 'S' for Sprint.\n")
         return
@@ -291,9 +267,8 @@ def pull_race_results():
         "Change"
     ]]
 
-    # Sort the table by classified position for a readable summary
-    numeric_sort = pd.to_numeric(results["Position"], errors="coerce")
-    results = results.assign(_sort=numeric_sort.fillna(999)).sort_values("_sort").drop(columns="_sort")
+    # Sort by classified position so retirees (R) land at the bottom
+    results = results.assign(_sort=numeric_pos.fillna(999)).sort_values("_sort").drop(columns="_sort")
 
     results.to_csv(OUTPUT_PATH, index=False)
 
@@ -346,7 +321,6 @@ if __name__ == "__main__":
     print(f"Session ended:     {local_end.strftime('%H:%M %Z')}")
     print(f"Duration:          {times['Ending Hour']}")
 
-    # Weather summary — ITS OWN name
     weather_summary = f1_utils.get_weather_summary(weather)
     print("\n" + "=" * 60)
     print(f"\nWeather summary for {YEAR} {EVENT} {SESSION_TYPE}:\n")
