@@ -5,7 +5,7 @@ from pathlib import Path
 # ---------------------------------------------------------------------
 
 YEAR = 2026
-EVENT = "Las Vegas Grand Prix"
+EVENT = "Qatar Grand Prix"
 SESSION_TYPE = "FP1"  # Options: FP1, FP2, FP3, Q, R, SQ, S
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
